@@ -50,7 +50,9 @@ mean_tobit <- function(x,
       x < lower
     }
   mask_between <- !(mask_upper | mask_lower)
-  if (all(mask_upper)) {
+  if (all(mask_between)) {
+    ret <- as_mean_tobit(mu = mean(x), sd = sd(x), message = "All values between lower and upper, standard mean/sd calculated")
+  } else if (all(mask_upper)) {
     ret <- as_mean_tobit(mu=NA_real_, sd=NA_real_, message="all values above upper")
   } else if (all(mask_lower)) {
     ret <- as_mean_tobit(mu=NA_real_, sd=NA_real_, message="all values below lower")

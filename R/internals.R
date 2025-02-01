@@ -76,7 +76,7 @@ negLogLik_tobit <- function(param, x,
 #' @keywords internal
 #' @noRd
 mean_tobit_check_x_lower_upper <- function(x, lower, upper, na.rm) {
-  x_clean <- mean_tobit_check_x_narm(x=x, na.rm=na.rm)
+  x_clean <- mean_tobit_check_values(x=x, na.rm=na.rm)
   if (inherits(x_clean, what="mean_tobit")) {
     return(list(x=x_clean))
   }
@@ -112,7 +112,7 @@ mean_tobit_check_x_lower_upper <- function(x, lower, upper, na.rm) {
 #' @family mean_tobit Input Checks
 #' @keywords internal
 #' @noRd
-mean_tobit_check_x_narm <- function(x, na.rm) {
+mean_tobit_check_values <- function(x, na.rm) {
   if (inherits(x, what="mean_tobit")) {
     stop("'x' may not have class 'mean_tobit'")
   }
