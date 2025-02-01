@@ -13,7 +13,9 @@
 #' @param na.rm A logical value indicating whether \code{NA} values should be
 #'   stripped from \code{x} before the computation proceeds.
 #' @inheritDotParams stats::optim
-#' @return A 'mean_tobit' object
+#' @return A 'mean_tobit' object which is a number with attributes for the
+#'   standard deviation (sd) and convergence information in the "message"
+#'   attribute.
 #' @family Censored Descriptive Statistics
 #' @export
 mean_tobit <- function(x,

@@ -1,5 +1,5 @@
 Package: tobit.mean
-Title: Calculate descriptive statistics of censored vectors
+Title: Calculate Descriptive Statistics of Censored Vectors
 Version: 0.0.0.9000
 Authors@R: 
     person("Bill", "Denney", email="wdenney@humanpredictions.com", role=c("aut", "cre"), comment=c(ORCID="0000-0002-5759-428X"))
@@ -11,7 +11,10 @@ License: AGPL (>= 3)
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.0.9000
+RoxygenNote: 7.3.2
 Suggests: 
+    spelling,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
+URL: https://humanpred.github.io/tobit.mean/
+Language: en-US

@@ -31,11 +31,11 @@ Create or extract the standard deviation from a mean_tobit object
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{mean_tobit}: Convert a 'mean_tobit' object to a 'sd_tobit' object
+\item \code{as_sd_tobit(mean_tobit)}: Convert a 'mean_tobit' object to a 'sd_tobit' object
 
-\item \code{geomean_tobit}: Convert a 'mean_tobit' object to a 'sd_tobit' object
+\item \code{as_sd_tobit(geomean_tobit)}: Convert a 'mean_tobit' object to a 'sd_tobit' object
+
 }}
-
 \seealso{
 Other Class creation and coercion: 
 \code{\link{as_cv_tobit}()},
