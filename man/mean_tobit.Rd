@@ -57,7 +57,9 @@ stripped from \code{x} before the computation proceeds.}
   }}
 }
 \value{
-A 'mean_tobit' object
+A 'mean_tobit' object which is a number with attributes for the
+standard deviation (sd) and convergence information in the "message"
+attribute.
 }
 \description{
 Calculate a censored mean

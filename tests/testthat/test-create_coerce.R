@@ -82,8 +82,8 @@ test_that("as_cv_tobit", {
     200
   )
   expect_equal(
-    as_cv_tobit(as_geomean_tobit(1, sd(log(1:2)))),
-    100*sqrt(exp(sd(log(1:2))^2)-1)
+    as_cv_tobit(as_geomean_tobit(1, stats::sd(log(1:2)))),
+    100*sqrt(exp(stats::sd(log(1:2))^2)-1)
   )
 })
 

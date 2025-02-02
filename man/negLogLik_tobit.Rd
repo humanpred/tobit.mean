@@ -33,7 +33,9 @@ Estimate the log-likelihood for the gamma/delta transformed convex parameters
 for tobit regression
 }
 \details{
-\code{beta = delta/gamma} and \code{sigma^2 = gamma^-2}.  The estimation is based on
+\code{beta = delta/gamma} and \code{sigma^2 = gamma^-2}.  The
+estimation is based on the convex reformulation of the likelihood function
+described in Olsen 1978.
 }
 \references{
 Olsen RJ. Note on the Uniqueness of the Maximum Likelihood

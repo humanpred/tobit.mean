@@ -23,12 +23,12 @@ Calculate the percent coefficient of variation (CV)
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{mean_tobit}: CV for the arithmetic mean: \code{100*sd/mu}
+\item \code{as_cv_tobit(mean_tobit)}: CV for the arithmetic mean: \code{100*sd/mu}
 
-\item \code{geomean_tobit}: CV for the geometric mean:
+\item \code{as_cv_tobit(geomean_tobit)}: CV for the geometric mean:
 \code{100*sqrt(exp(sd^2)-1)}
-}}
 
+}}
 \seealso{
 Other Class creation and coercion: 
 \code{\link{as_geomean_tobit}()},

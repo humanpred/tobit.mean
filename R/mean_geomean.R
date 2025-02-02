@@ -13,7 +13,9 @@
 #' @param na.rm A logical value indicating whether \code{NA} values should be
 #'   stripped from \code{x} before the computation proceeds.
 #' @inheritDotParams stats::optim
-#' @return A 'mean_tobit' object
+#' @return A 'mean_tobit' object which is a number with attributes for the
+#'   standard deviation (sd) and convergence information in the "message"
+#'   attribute.
 #' @family Censored Descriptive Statistics
 #' @export
 mean_tobit <- function(x,
@@ -48,17 +50,19 @@ mean_tobit <- function(x,
       x < lower
     }
   mask_between <- !(mask_upper | mask_lower)
-  if (all(mask_upper)) {
+  if (all(mask_between)) {
+    ret <- as_mean_tobit(mu = mean(x), sd = stats::sd(x), message = "All values between lower and upper, standard mean/sd calculated")
+  } else if (all(mask_upper)) {
     ret <- as_mean_tobit(mu=NA_real_, sd=NA_real_, message="all values above upper")
   } else if (all(mask_lower)) {
     ret <- as_mean_tobit(mu=NA_real_, sd=NA_real_, message="all values below lower")
   } else if (all(x == x[1])) {
     ret <- as_mean_tobit(mu=x[1], sd=0, message="single unique value")
   } else {
-    lgamma <- log(1/sd(x))
-    delta <- mean(x)*sd(x)
+    lgamma <- log(1/stats::sd(x))
+    delta <- mean(x)*stats::sd(x)
     ret_prep <-
-      optim(
+      stats::optim(
         par=c(lgamma, delta),
         fn=negLogLik_tobit,
         method="L-BFGS-B",
@@ -81,7 +85,7 @@ mean_tobit <- function(x,
           sd=sd_est,
           message=
             paste(
-              "Successful convergence.  message from optim():",
+              "Successful convergence.  message from stats::optim():",
               ret_prep$message
             )
         )
@@ -93,7 +97,7 @@ mean_tobit <- function(x,
           sd=NA_real_,
           message=
             paste(
-              "Failed convergence.  message from optim():",
+              "Failed convergence.  message from stats::optim():",
               ret_prep$message
             )
         )
@@ -148,9 +152,9 @@ geomean_tobit <- function(x, lower=0, upper=Inf, na.rm=TRUE, ...) {
     x[mask_negative_x] <- 0
   }
   mask_negative_lower <- lower < 0
-  if (any(mask_negative)) {
+  if (any(mask_negative_lower)) {
     warning("some 'lower' values were below zero, setting to zero")
-    lower[mask_negative] <- 0
+    lower[mask_negative_lower] <- 0
   }
   if (any(upper <= 0)) {
     stop("some 'upper' values were at or below zero")

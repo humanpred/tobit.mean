@@ -68,7 +68,7 @@ test_that("negLogLik_tobit", {
     ),
     -sum(
       c(
-        log(2) + dt(exp(2)*2 - 3, df=3, log=TRUE),
+        log(exp(2)) + dt(exp(2)*2 - 3, df=3, log=TRUE),
         pt(exp(2)*1.5 - 3, df=3, log.p=TRUE),
         pt(exp(2)*4-3, df=3, log.p=TRUE)
       )
@@ -85,9 +85,9 @@ test_that("negLogLik_tobit", {
     ),
     -sum(
       c(
-        dt((2 - 1)/2, df=3, log=TRUE),
-        pt((1.5 - 1)/2, df=3, log.p=TRUE),
-        pt((1 - 4)/2, df=3, log.p=TRUE)
+        log(exp(1)) + dt(exp(1)*2 - log(2), df=3, log=TRUE),
+        pt(exp(1)*1.5 - log(2), df=3, log.p=TRUE),
+        pt(exp(1)*4 - log(2), df=3, log.p=TRUE)
       )
     )
   )
