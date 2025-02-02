@@ -45,15 +45,15 @@ negLogLik_tobit <- function(param, x,
   loglik_i <-
     if (distribution == "norm") {
       c(
-        log(gamma) + dnorm(xtrans_between, log=TRUE),
-        pnorm(xtrans_lower, log.p=TRUE),
-        pnorm(xtrans_upper, log.p=TRUE)
+        log(gamma) + stats::dnorm(xtrans_between, log=TRUE),
+        stats::pnorm(xtrans_lower, log.p=TRUE),
+        stats::pnorm(xtrans_upper, log.p=TRUE)
       )
     } else if (distribution == "t") {
       c(
-        log(gamma) + dt(xtrans_between, df=l_x, log=TRUE),
-        pt(xtrans_lower, df=l_x, log.p=TRUE),
-        pt(xtrans_upper, df=l_x, log.p=TRUE)
+        log(gamma) + stats::dt(xtrans_between, df=l_x, log=TRUE),
+        stats::pt(xtrans_lower, df=l_x, log.p=TRUE),
+        stats::pt(xtrans_upper, df=l_x, log.p=TRUE)
       )
     } else {
       stop("Invalid distribution, please report this as a bug: ", distribution) # nocov
@@ -121,7 +121,7 @@ mean_tobit_check_values <- function(x, na.rm) {
   } else if (any(is.na(x)) & !na.rm) {
     ret <- as_mean_tobit(mu=NA_real_, sd=NA_real_, message="Some values were NA, and na.rm=FALSE")
   } else {
-    ret <- na.omit(x)
+    ret <- stats::na.omit(x)
   }
   ret
 }
