@@ -25,8 +25,8 @@ bounds consider \code{x <= lower} and \code{x >= upper} (if \code{TRUE}) or
 or \code{include_equal_upper}.)}
     \item{\code{distribution}}{What distribution (Student \code{"t"} or normal,
 \code{"norm"}) should be used.  If \code{"t"}, the degrees of freedom are
-the number of non-\code{NA} values in \code{x}.  If not given,
-\code{"t"} is used.}
+the number of non-\code{NA} values in \code{x}.  There is no default;
+it must be given when any value of \code{x} is censored.}
   }}
 }
 \value{
