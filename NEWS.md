@@ -1,3 +1,3 @@
-# tobit.mean 0.0.0.9000
+# tobit.mean 0.1.0
 
 * Initial CRAN submission.
