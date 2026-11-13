@@ -3,10 +3,13 @@
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/humanpred/tobit.mean/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/humanpred/tobit.mean/actions/workflows/R-CMD-check.yaml)
 [![Codecov test coverage](https://codecov.io/gh/humanpred/tobit.mean/graph/badge.svg)](https://app.codecov.io/gh/humanpred/tobit.mean)
-[![CRAN status](https://www.r-pkg.org/badges/version/tobit.mean)](https://CRAN.R-project.org/package=tobit.mean)
 <!-- badges: end -->
 
-The goal of tobit.mean is to calculate descriptive statistics of censored vectors.
+The goal of tobit.mean is to calculate descriptive statistics of censored
+vectors (for example, concentrations below a limit of quantification).  The
+arithmetic mean, geometric mean, standard deviation, and coefficient of
+variation are estimated by maximum likelihood with the Tobit model, so censored
+values are accounted for rather than dropped or replaced.
 
 ## Installation
 
@@ -20,7 +23,7 @@ pak::pak("humanpred/tobit.mean")
 
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
+Calculate the mean of a vector where values at or below 0.5 are censored:
 
 ``` r
 library(tobit.mean)

@@ -2,19 +2,28 @@ Package: tobit.mean
 Title: Calculate Descriptive Statistics of Censored Vectors
 Version: 0.0.0.9000
 Authors@R: 
-    person("Bill", "Denney", email="wdenney@humanpredictions.com", role=c("aut", "cre"), comment=c(ORCID="0000-0002-5759-428X"))
-Description:
-    Statistics of censored values often use normal statistics ignoring the
-    censoring.  Multiple descriptive statistics can be calculated with this
-    package taking into account censoring.
+    person("Bill", "Denney", , "wdenney@humanpredictions.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0002-5759-428X"))
+Description: Calculate descriptive statistics of left- and right-censored
+    numeric vectors: the arithmetic mean, geometric mean, standard deviation,
+    and percent coefficient of variation.  Censoring is accounted for by
+    maximum likelihood estimation with the Tobit model (Tobin (1958)
+    <doi:10.2307/1907382>), using the convex reparameterization of the
+    likelihood described by Olsen (1978) <doi:10.2307/1911445>, rather than
+    by ignoring or substituting censored values.
 License: AGPL (>= 3)
-Encoding: UTF-8
-LazyData: true
-Roxygen: list(markdown = TRUE)
+URL: https://humanpred.github.io/tobit.mean/,
+    https://github.com/humanpred/tobit.mean
+BugReports: https://github.com/humanpred/tobit.mean/issues
+Depends: 
+    R (>= 4.0.0)
+Imports: 
+    stats
 Suggests: 
     spelling,
     testthat (>= 3.0.0)
-Config/testthat/edition: 3
-URL: https://humanpred.github.io/tobit.mean/
-Language: en-US
 Config/roxygen2/version: 8.1.0
+Config/testthat/edition: 3
+Encoding: UTF-8
+Language: en-US
+Roxygen: list(markdown = TRUE)
