@@ -28,6 +28,9 @@ value is below the lower limit, a point value, or above the upper limit}
 
 \item{distribution}{The distribution to use}
 }
+\value{
+The negative log-likelihood as a numeric scalar
+}
 \description{
 Estimate the log-likelihood for the gamma/delta transformed convex parameters
 for tobit regression
@@ -39,7 +42,7 @@ described in Olsen 1978.
 }
 \references{
 Olsen RJ. Note on the Uniqueness of the Maximum Likelihood
-Estimator for the Tobit Model. Econometrica. 1978;46(5):1211.
-doi:10.2307/1911445
+Estimator for the Tobit Model. Econometrica. 1978;46(5):1211-1215.
+\doi{10.2307/1911445}
 }
-\keyword{Internal}
+\keyword{internal}

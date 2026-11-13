@@ -33,13 +33,18 @@ Create or extract the standard deviation from a mean_tobit object
 \itemize{
 \item \code{as_sd_tobit(mean_tobit)}: Convert a 'mean_tobit' object to a 'sd_tobit' object
 
-\item \code{as_sd_tobit(geomean_tobit)}: Convert a 'mean_tobit' object to a 'sd_tobit' object
+\item \code{as_sd_tobit(geomean_tobit)}: Convert a 'geomean_tobit' object to a 'sd_tobit'
+object
 
 }}
+\examples{
+as_sd_tobit(mu = 10, sd = 2)
+as_sd_tobit(as_mean_tobit(mu = 10, sd = 2))
+}
 \seealso{
-Other Class creation and coercion: 
-\code{\link{as_cv_tobit}()},
-\code{\link{as_geomean_tobit}()},
-\code{\link{as_mean_tobit}()}
+Other Class creation and coercion:
+\code{\link[=as_cv_tobit]{as_cv_tobit()}},
+\code{\link[=as_geomean_tobit]{as_geomean_tobit()}},
+\code{\link[=as_mean_tobit]{as_mean_tobit()}}
 }
 \concept{Class creation and coercion}

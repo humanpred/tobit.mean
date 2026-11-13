@@ -8,7 +8,7 @@ sd_tobit(...)
 }
 \arguments{
 \item{...}{
-  Arguments passed on to \code{\link[=mean_tobit]{mean_tobit}}
+  Arguments passed on to \code{\link{mean_tobit}}
   \describe{
     \item{\code{x}}{A numeric vector}
     \item{\code{lower,upper}}{The lower and upper bounds for censoring \code{x}}
@@ -17,9 +17,10 @@ bounds consider \code{x <= lower} and \code{x >= upper} (if \code{TRUE}) or
 \code{x < lower} and \code{x > upper} (if \code{FALSE}) to be censored?
 (\code{include_equal} is overridden by setting \code{include_equal_lower}
 or \code{include_equal_upper}.)}
-    \item{\code{distribution}}{What distribution (Student "t" or "normal") should be
-used.  If "t", the degrees of freedom are the number of non-\code{NA}
-values in \code{x}.}
+    \item{\code{distribution}}{What distribution (Student \code{"t"} or normal,
+\code{"norm"}) should be used.  If \code{"t"}, the degrees of freedom are
+the number of non-\code{NA} values in \code{x}.  There is no default;
+it must be given when any value of \code{x} is censored.}
     \item{\code{na.rm}}{A logical value indicating whether \code{NA} values should be
 stripped from \code{x} before the computation proceeds.}
   }}
@@ -32,9 +33,12 @@ Since the standard deviation is almost always desired with the mean, it is
 more efficient to use \code{as_sd_tobit()} on the mean object instead of
 calculating the standard deviation separately.
 }
+\examples{
+sd_tobit(c(2, 2, 3, 5, 6, 8), lower = 2, distribution = "norm")
+}
 \seealso{
-Other Censored Descriptive Statistics: 
-\code{\link{geomean_tobit}()},
-\code{\link{mean_tobit}()}
+Other Censored Descriptive Statistics:
+\code{\link[=geomean_tobit]{geomean_tobit()}},
+\code{\link[=mean_tobit]{mean_tobit()}}
 }
 \concept{Censored Descriptive Statistics}

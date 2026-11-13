@@ -1,3 +1,4 @@
+^\.git$
 ^tobit\.mean\.Rproj$
 ^\.Rproj\.user$
 ^LICENSE\.md$
@@ -5,3 +6,7 @@
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
+^\.claude$
+^cran-comments\.md$
+^CRAN-SUBMISSION$
+^codecov\.yml$

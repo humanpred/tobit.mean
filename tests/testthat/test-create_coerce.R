@@ -21,8 +21,6 @@ test_that("as_mean_tobit", {
     as_mean_tobit(NA_real_, NA_real_, "foo")
   )
   expect_error(
-  )
-  expect_error(
     as_mean_tobit("A", 2, "foo"),
     regexp="'mu' must be numeric"
   )

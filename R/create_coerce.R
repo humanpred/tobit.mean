@@ -109,6 +109,9 @@ as_geomean_tobit.mean_tobit <- function(mu, sd, message=NULL) {
 #' @param x The object to use for CV calculation
 #' @return The percent coefficient of variation as a numeric scalar
 #' @family Class creation and coercion
+#' @examples
+#' as_cv_tobit(as_mean_tobit(mu = 10, sd = 2))
+#' as_cv_tobit(as_geomean_tobit(mu = 10, sd = 0.2))
 #' @export
 as_cv_tobit <- function(x) {
   UseMethod("as_cv_tobit")
@@ -132,6 +135,9 @@ as_cv_tobit.geomean_tobit <- function(x) {
 #' @return A 'sd_tobit' class object which is a number with attributes of 'mu'
 #'   (the mean) and 'message'.
 #' @family Class creation and coercion
+#' @examples
+#' as_sd_tobit(mu = 10, sd = 2)
+#' as_sd_tobit(as_mean_tobit(mu = 10, sd = 2))
 #' @export
 as_sd_tobit <- function(mu, sd, message=NULL) {
   UseMethod("as_sd_tobit")
@@ -167,7 +173,8 @@ as_sd_tobit.mean_tobit <- function(mu, sd, message=NULL) {
   as_sd_tobit_convert(mu, sd, message=NULL)
 }
 
-#' @describeIn as_sd_tobit Convert a 'mean_tobit' object to a 'sd_tobit' object
+#' @describeIn as_sd_tobit Convert a 'geomean_tobit' object to a 'sd_tobit'
+#'   object
 #' @export
 as_sd_tobit.geomean_tobit <- function(mu, sd, message=NULL) {
   as_sd_tobit_convert(mu, sd, message=NULL)

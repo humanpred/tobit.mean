@@ -13,10 +13,11 @@
 #' @param mask_lower,mask_between,mask_upper Boolean masks indicating if the
 #'   value is below the lower limit, a point value, or above the upper limit
 #' @param distribution The distribution to use
+#' @return The negative log-likelihood as a numeric scalar
 #' @references Olsen RJ. Note on the Uniqueness of the Maximum Likelihood
-#'   Estimator for the Tobit Model. Econometrica. 1978;46(5):1211.
-#'   doi:10.2307/1911445
-#' @keywords Internal
+#'   Estimator for the Tobit Model. Econometrica. 1978;46(5):1211-1215.
+#'   \doi{10.2307/1911445}
+#' @keywords internal
 negLogLik_tobit <- function(param, x,
                             lower_limit, upper_limit,
                             mask_lower, mask_between, mask_upper,
