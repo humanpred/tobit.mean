@@ -147,4 +147,14 @@ test_that("tobit_sd_from_scale", {
   expect_equal(tobit_sd_from_scale(2, distribution="norm", df=1), 2)
   expect_equal(tobit_sd_from_scale(2, distribution="t", df=10), 2*sqrt(10/8))
   expect_equal(tobit_sd_from_scale(2, distribution="t", df=2), NA_real_)
+  # df is not used (or checked) for the normal distribution
+  expect_equal(tobit_sd_from_scale(2, distribution="norm", df=NA), 2)
+  expect_error(
+    tobit_sd_from_scale(2, distribution="foo", df=10),
+    regexp="'arg' should be one of"
+  )
+  msg_df <- "'df' must be a single, positive, non-NA number"
+  expect_error(tobit_sd_from_scale(2, distribution="t", df=NA), regexp=msg_df)
+  expect_error(tobit_sd_from_scale(2, distribution="t", df=0), regexp=msg_df)
+  expect_error(tobit_sd_from_scale(2, distribution="t", df=c(3, 4)), regexp=msg_df)
 })

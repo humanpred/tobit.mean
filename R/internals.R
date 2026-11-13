@@ -159,16 +159,24 @@ tobit_standardization <- function(x, lower, upper, mask_lower, mask_upper) {
 #' Convert the fitted scale parameter to a standard deviation
 #'
 #' @param scale The fitted scale parameter
-#' @param distribution The distribution used for fitting
-#' @param df The degrees of freedom (used only for the t distribution)
+#' @param distribution The distribution used for fitting (\code{"t"} or
+#'   \code{"norm"})
+#' @param df The degrees of freedom (used and checked only for the t
+#'   distribution)
 #' @return The standard deviation; \code{NA} for the t distribution when
 #'   \code{df <= 2} because its variance is not finite.
 #' @keywords internal
 #' @noRd
-tobit_sd_from_scale <- function(scale, distribution, df) {
+tobit_sd_from_scale <- function(scale, distribution=c("t", "norm"), df) {
+  distribution <- match.arg(distribution)
   if (distribution == "norm") {
-    scale
-  } else if (df > 2) {
+    return(scale)
+  }
+  stopifnot(
+    "'df' must be a single, positive, non-NA number"=
+      length(df) == 1 && !is.na(df) && df > 0
+  )
+  if (df > 2) {
     scale*sqrt(df/(df - 2))
   } else {
     NA_real_
