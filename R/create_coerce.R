@@ -13,7 +13,7 @@ as_tobit_input_check <- function(mu, sd, message) {
   }
   stopifnot("'mu' must be numeric"=is.numeric(mu))
   stopifnot("'sd' must be numeric"=is.numeric(sd))
-  stopifnot("'mu' and 'sd' must either both or neither be NA"=!xor(is.na(mu), is.na(sd)))
+  stopifnot("'sd' must be NA when 'mu' is NA"=is.na(sd) || !is.na(mu))
   list(mu=mu, sd=sd, message=message)
 }
 
@@ -42,7 +42,8 @@ as_tobit_input_check_conversion <- function(mu, sd, message) {
 #' Create or cast to a mean_tobit object
 #'
 #' @param mu The arithmetic mean
-#' @param sd The arithmetic standard deviation
+#' @param sd The arithmetic standard deviation (\code{NA} when it cannot be
+#'   estimated; it must be \code{NA} when \code{mu} is \code{NA})
 #' @param message Additional information about the mean
 #' @return A 'mean_tobit' class object which is a number with attributes for
 #'   'sd' and 'message'.
@@ -127,7 +128,23 @@ as_cv_tobit.mean_tobit <- function(x) {
 #'   \code{100*sqrt(exp(sd^2)-1)}
 #' @export
 as_cv_tobit.geomean_tobit <- function(x) {
-  100*sqrt(exp(attr(x, "sd", exact=TRUE)^2) - 1)
+  cv_geomean(attr(x, "sd", exact=TRUE))
+}
+
+#' @describeIn as_cv_tobit CV from a 'sd_tobit' object, using the geometric
+#'   formula when it came from a 'geomean_tobit' object and the arithmetic
+#'   formula otherwise
+#' @export
+as_cv_tobit.sd_tobit <- function(x) {
+  if (inherits(x, "geomean_tobit")) {
+    cv_geomean(as.numeric(x))
+  } else {
+    100*as.numeric(x)/attr(x, "mu", exact=TRUE)
+  }
+}
+
+cv_geomean <- function(sd) {
+  100*sqrt(exp(sd^2) - 1)
 }
 
 #' Create or extract the standard deviation from a mean_tobit object
@@ -146,11 +163,11 @@ as_sd_tobit <- function(mu, sd, message=NULL) {
 #' @rdname as_sd_tobit
 #' @export
 as_sd_tobit.default <- function(mu, sd, message=NULL) {
-  as_tobit_input_check(mu=mu, sd=sd, message=message)
+  tmp <- as_tobit_input_check(mu=mu, sd=sd, message=message)
   structure(
-    sd,
-    mu=mu,
-    message=message,
+    tmp$sd,
+    mu=tmp$mu,
+    message=tmp$message,
     class="sd_tobit"
   )
 }
@@ -170,12 +187,19 @@ as_sd_tobit_convert <- function(mu, sd, message) {
 #' @describeIn as_sd_tobit Convert a 'mean_tobit' object to a 'sd_tobit' object
 #' @export
 as_sd_tobit.mean_tobit <- function(mu, sd, message=NULL) {
-  as_sd_tobit_convert(mu, sd, message=NULL)
+  as_sd_tobit_convert(mu, sd, message=message)
 }
 
 #' @describeIn as_sd_tobit Convert a 'geomean_tobit' object to a 'sd_tobit'
 #'   object
 #' @export
 as_sd_tobit.geomean_tobit <- function(mu, sd, message=NULL) {
-  as_sd_tobit_convert(mu, sd, message=NULL)
+  as_sd_tobit_convert(mu, sd, message=message)
+}
+
+#' @describeIn as_sd_tobit Return a 'sd_tobit' object unchanged
+#' @export
+as_sd_tobit.sd_tobit <- function(mu, sd, message=NULL) {
+  as_tobit_input_check_conversion(sd=sd, message=message)
+  mu
 }

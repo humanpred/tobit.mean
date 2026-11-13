@@ -4,6 +4,7 @@
 \alias{as_cv_tobit}
 \alias{as_cv_tobit.mean_tobit}
 \alias{as_cv_tobit.geomean_tobit}
+\alias{as_cv_tobit.sd_tobit}
 \title{Calculate the percent coefficient of variation (CV)}
 \usage{
 as_cv_tobit(x)
@@ -11,6 +12,8 @@ as_cv_tobit(x)
 \method{as_cv_tobit}{mean_tobit}(x)
 
 \method{as_cv_tobit}{geomean_tobit}(x)
+
+\method{as_cv_tobit}{sd_tobit}(x)
 }
 \arguments{
 \item{x}{The object to use for CV calculation}
@@ -27,6 +30,10 @@ Calculate the percent coefficient of variation (CV)
 
 \item \code{as_cv_tobit(geomean_tobit)}: CV for the geometric mean:
 \code{100*sqrt(exp(sd^2)-1)}
+
+\item \code{as_cv_tobit(sd_tobit)}: CV from a 'sd_tobit' object, using the geometric
+formula when it came from a 'geomean_tobit' object and the arithmetic
+formula otherwise
 
 }}
 \examples{

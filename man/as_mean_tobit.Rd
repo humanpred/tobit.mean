@@ -12,7 +12,8 @@ as_mean_tobit(mu, sd, message = NULL)
 \arguments{
 \item{mu}{The arithmetic mean}
 
-\item{sd}{The arithmetic standard deviation}
+\item{sd}{The arithmetic standard deviation (\code{NA} when it cannot be
+estimated; it must be \code{NA} when \code{mu} is \code{NA})}
 
 \item{message}{Additional information about the mean}
 }

@@ -5,6 +5,7 @@
 \alias{as_sd_tobit.default}
 \alias{as_sd_tobit.mean_tobit}
 \alias{as_sd_tobit.geomean_tobit}
+\alias{as_sd_tobit.sd_tobit}
 \title{Create or extract the standard deviation from a mean_tobit object}
 \usage{
 as_sd_tobit(mu, sd, message = NULL)
@@ -14,11 +15,14 @@ as_sd_tobit(mu, sd, message = NULL)
 \method{as_sd_tobit}{mean_tobit}(mu, sd, message = NULL)
 
 \method{as_sd_tobit}{geomean_tobit}(mu, sd, message = NULL)
+
+\method{as_sd_tobit}{sd_tobit}(mu, sd, message = NULL)
 }
 \arguments{
 \item{mu}{The arithmetic mean}
 
-\item{sd}{The arithmetic standard deviation}
+\item{sd}{The arithmetic standard deviation (\code{NA} when it cannot be
+estimated; it must be \code{NA} when \code{mu} is \code{NA})}
 
 \item{message}{Additional information about the mean}
 }
@@ -35,6 +39,8 @@ Create or extract the standard deviation from a mean_tobit object
 
 \item \code{as_sd_tobit(geomean_tobit)}: Convert a 'geomean_tobit' object to a 'sd_tobit'
 object
+
+\item \code{as_sd_tobit(sd_tobit)}: Return a 'sd_tobit' object unchanged
 
 }}
 \examples{
