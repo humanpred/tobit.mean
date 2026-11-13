@@ -15,7 +15,7 @@ geomean_tobit(x, lower = 0, upper = Inf, na.rm = TRUE, ...)
 stripped from \code{x} before the computation proceeds.}
 
 \item{...}{
-  Arguments passed on to \code{\link[=mean_tobit]{mean_tobit}}
+  Arguments passed on to \code{\link{mean_tobit}}
   \describe{
     \item{\code{lower,upper}}{The lower and upper bounds for censoring \code{x}}
     \item{\code{include_equal,include_equal_lower,include_equal_upper}}{Should the
@@ -35,8 +35,8 @@ A "sd_tobit" class object
 Calculate the censored geometric mean
 }
 \seealso{
-Other Censored Descriptive Statistics: 
-\code{\link{mean_tobit}()},
-\code{\link{sd_tobit}()}
+Other Censored Descriptive Statistics:
+\code{\link[=mean_tobit]{mean_tobit()}},
+\code{\link[=sd_tobit]{sd_tobit()}}
 }
 \concept{Censored Descriptive Statistics}

@@ -30,9 +30,9 @@ Create or cast to a geomean_tobit object
 as_geomean_tobit(mu=10, sd=2, message="This is just an example")
 }
 \seealso{
-Other Class creation and coercion: 
-\code{\link{as_cv_tobit}()},
-\code{\link{as_mean_tobit}()},
-\code{\link{as_sd_tobit}()}
+Other Class creation and coercion:
+\code{\link[=as_cv_tobit]{as_cv_tobit()}},
+\code{\link[=as_mean_tobit]{as_mean_tobit()}},
+\code{\link[=as_sd_tobit]{as_sd_tobit()}}
 }
 \concept{Class creation and coercion}

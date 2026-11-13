@@ -8,7 +8,7 @@ sd_tobit(...)
 }
 \arguments{
 \item{...}{
-  Arguments passed on to \code{\link[=mean_tobit]{mean_tobit}}
+  Arguments passed on to \code{\link{mean_tobit}}
   \describe{
     \item{\code{x}}{A numeric vector}
     \item{\code{lower,upper}}{The lower and upper bounds for censoring \code{x}}
@@ -33,8 +33,8 @@ more efficient to use \code{as_sd_tobit()} on the mean object instead of
 calculating the standard deviation separately.
 }
 \seealso{
-Other Censored Descriptive Statistics: 
-\code{\link{geomean_tobit}()},
-\code{\link{mean_tobit}()}
+Other Censored Descriptive Statistics:
+\code{\link[=geomean_tobit]{geomean_tobit()}},
+\code{\link[=mean_tobit]{mean_tobit()}}
 }
 \concept{Censored Descriptive Statistics}

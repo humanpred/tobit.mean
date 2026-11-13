@@ -65,8 +65,8 @@ attribute.
 Calculate a censored mean
 }
 \seealso{
-Other Censored Descriptive Statistics: 
-\code{\link{geomean_tobit}()},
-\code{\link{sd_tobit}()}
+Other Censored Descriptive Statistics:
+\code{\link[=geomean_tobit]{geomean_tobit()}},
+\code{\link[=sd_tobit]{sd_tobit()}}
 }
 \concept{Censored Descriptive Statistics}

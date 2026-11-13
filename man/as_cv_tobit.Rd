@@ -30,9 +30,9 @@ Calculate the percent coefficient of variation (CV)
 
 }}
 \seealso{
-Other Class creation and coercion: 
-\code{\link{as_geomean_tobit}()},
-\code{\link{as_mean_tobit}()},
-\code{\link{as_sd_tobit}()}
+Other Class creation and coercion:
+\code{\link[=as_geomean_tobit]{as_geomean_tobit()}},
+\code{\link[=as_mean_tobit]{as_mean_tobit()}},
+\code{\link[=as_sd_tobit]{as_sd_tobit()}}
 }
 \concept{Class creation and coercion}
