@@ -27,9 +27,10 @@ bounds consider \code{x <= lower} and \code{x >= upper} (if \code{TRUE}) or
 (\code{include_equal} is overridden by setting \code{include_equal_lower}
 or \code{include_equal_upper}.)}
 
-\item{distribution}{What distribution (Student "t" or "normal") should be
-used.  If "t", the degrees of freedom are the number of non-\code{NA}
-values in \code{x}.}
+\item{distribution}{What distribution (Student \code{"t"} or normal,
+\code{"norm"}) should be used.  If \code{"t"}, the degrees of freedom are
+the number of non-\code{NA} values in \code{x}.  If not given,
+\code{"t"} is used.}
 
 \item{na.rm}{A logical value indicating whether \code{NA} values should be
 stripped from \code{x} before the computation proceeds.}
@@ -63,6 +64,19 @@ attribute.
 }
 \description{
 Calculate a censored mean
+}
+\examples{
+# Values at or below 2 are censored (for example, below a limit of
+# quantification)
+mean_tobit(c(2, 2, 3, 5, 6, 8), lower = 2, distribution = "norm")
+}
+\references{
+Tobin J. Estimation of Relationships for Limited Dependent
+Variables. Econometrica. 1958;26(1):24-36. \doi{10.2307/1907382}
+
+Olsen RJ. Note on the Uniqueness of the Maximum Likelihood Estimator for
+the Tobit Model. Econometrica. 1978;46(5):1211-1215.
+\doi{10.2307/1911445}
 }
 \seealso{
 Other Censored Descriptive Statistics:

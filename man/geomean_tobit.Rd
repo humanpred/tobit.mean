@@ -23,16 +23,21 @@ bounds consider \code{x <= lower} and \code{x >= upper} (if \code{TRUE}) or
 \code{x < lower} and \code{x > upper} (if \code{FALSE}) to be censored?
 (\code{include_equal} is overridden by setting \code{include_equal_lower}
 or \code{include_equal_upper}.)}
-    \item{\code{distribution}}{What distribution (Student "t" or "normal") should be
-used.  If "t", the degrees of freedom are the number of non-\code{NA}
-values in \code{x}.}
+    \item{\code{distribution}}{What distribution (Student \code{"t"} or normal,
+\code{"norm"}) should be used.  If \code{"t"}, the degrees of freedom are
+the number of non-\code{NA} values in \code{x}.  If not given,
+\code{"t"} is used.}
   }}
 }
 \value{
-A "sd_tobit" class object
+A "geomean_tobit" class object (which also has the "mean_tobit"
+class) which is a number with attributes for the standard deviation of
+\code{log(x)} (sd) and convergence information in the "message"
+attribute.
 }
 \description{
-Calculate the censored geometric mean
+The geometric mean is calculated as the exponential of the censored mean of
+\code{log(x)}.
 }
 \seealso{
 Other Censored Descriptive Statistics:

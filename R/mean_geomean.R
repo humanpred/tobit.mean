@@ -7,16 +7,27 @@
 #'   \code{x < lower} and \code{x > upper} (if \code{FALSE}) to be censored?
 #'   (\code{include_equal} is overridden by setting \code{include_equal_lower}
 #'   or \code{include_equal_upper}.)
-#' @param distribution What distribution (Student "t" or "normal") should be
-#'   used.  If "t", the degrees of freedom are the number of non-\code{NA}
-#'   values in \code{x}.
+#' @param distribution What distribution (Student \code{"t"} or normal,
+#'   \code{"norm"}) should be used.  If \code{"t"}, the degrees of freedom are
+#'   the number of non-\code{NA} values in \code{x}.  If not given,
+#'   \code{"t"} is used.
 #' @param na.rm A logical value indicating whether \code{NA} values should be
 #'   stripped from \code{x} before the computation proceeds.
 #' @inheritDotParams stats::optim
 #' @return A 'mean_tobit' object which is a number with attributes for the
 #'   standard deviation (sd) and convergence information in the "message"
 #'   attribute.
+#' @references Tobin J. Estimation of Relationships for Limited Dependent
+#'   Variables. Econometrica. 1958;26(1):24-36. \doi{10.2307/1907382}
+#'
+#'   Olsen RJ. Note on the Uniqueness of the Maximum Likelihood Estimator for
+#'   the Tobit Model. Econometrica. 1978;46(5):1211-1215.
+#'   \doi{10.2307/1911445}
 #' @family Censored Descriptive Statistics
+#' @examples
+#' # Values at or below 2 are censored (for example, below a limit of
+#' # quantification)
+#' mean_tobit(c(2, 2, 3, 5, 6, 8), lower = 2, distribution = "norm")
 #' @export
 mean_tobit <- function(x,
                        lower=-Inf, upper=Inf,
@@ -115,6 +126,8 @@ mean_tobit <- function(x,
 #' @inheritDotParams mean_tobit
 #' @return A "sd_tobit" class object
 #' @family Censored Descriptive Statistics
+#' @examples
+#' sd_tobit(c(2, 2, 3, 5, 6, 8), lower = 2, distribution = "norm")
 #' @export
 sd_tobit <- function(...) {
   as_sd_tobit(mean_tobit(...))
@@ -122,9 +135,15 @@ sd_tobit <- function(...) {
 
 #' Calculate the censored geometric mean
 #'
+#' The geometric mean is calculated as the exponential of the censored mean of
+#' \code{log(x)}.
+#'
 #' @inheritParams mean_tobit
 #' @inheritDotParams mean_tobit
-#' @return A "sd_tobit" class object
+#' @return A "geomean_tobit" class object (which also has the "mean_tobit"
+#'   class) which is a number with attributes for the standard deviation of
+#'   \code{log(x)} (sd) and convergence information in the "message"
+#'   attribute.
 #' @family Censored Descriptive Statistics
 #' @export
 geomean_tobit <- function(x, lower=0, upper=Inf, na.rm=TRUE, ...) {

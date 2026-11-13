@@ -29,6 +29,10 @@ Calculate the percent coefficient of variation (CV)
 \code{100*sqrt(exp(sd^2)-1)}
 
 }}
+\examples{
+as_cv_tobit(as_mean_tobit(mu = 10, sd = 2))
+as_cv_tobit(as_geomean_tobit(mu = 10, sd = 0.2))
+}
 \seealso{
 Other Class creation and coercion:
 \code{\link[=as_geomean_tobit]{as_geomean_tobit()}},
