@@ -17,10 +17,12 @@ bounds consider \code{x <= lower} and \code{x >= upper} (if \code{TRUE}) or
 \code{x < lower} and \code{x > upper} (if \code{FALSE}) to be censored?
 (\code{include_equal} is overridden by setting \code{include_equal_lower}
 or \code{include_equal_upper}.)}
-    \item{\code{distribution}}{What distribution (Student \code{"t"} or normal,
-\code{"norm"}) should be used.  If \code{"t"}, the degrees of freedom are
-the number of non-\code{NA} values in \code{x}.  There is no default;
-it must be given when any value of \code{x} is censored.}
+    \item{\code{distribution}}{What distribution (Student \code{"t"}, the default, or
+normal, \code{"norm"}) should be used.  If \code{"t"}, the degrees of
+freedom are the number of non-\code{NA} values in \code{x}, and the
+reported standard deviation is that of the fitted t distribution
+(\code{scale*sqrt(df/(df - 2))}), which is \code{NA} when there are two or
+fewer values.}
     \item{\code{na.rm}}{A logical value indicating whether \code{NA} values should be
 stripped from \code{x} before the computation proceeds.}
   }}

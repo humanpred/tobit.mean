@@ -26,7 +26,8 @@ negLogLik_tobit(
 \item{mask_lower, mask_between, mask_upper}{Boolean masks indicating if the
 value is below the lower limit, a point value, or above the upper limit}
 
-\item{distribution}{The distribution to use}
+\item{distribution}{The distribution to use.  For \code{"t"}, the degrees of
+freedom are \code{length(x)}.}
 }
 \value{
 The negative log-likelihood as a numeric scalar

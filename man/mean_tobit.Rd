@@ -11,7 +11,7 @@ mean_tobit(
   include_equal = TRUE,
   include_equal_lower = include_equal,
   include_equal_upper = include_equal,
-  distribution,
+  distribution = c("t", "norm"),
   na.rm = TRUE,
   ...
 )
@@ -27,10 +27,12 @@ bounds consider \code{x <= lower} and \code{x >= upper} (if \code{TRUE}) or
 (\code{include_equal} is overridden by setting \code{include_equal_lower}
 or \code{include_equal_upper}.)}
 
-\item{distribution}{What distribution (Student \code{"t"} or normal,
-\code{"norm"}) should be used.  If \code{"t"}, the degrees of freedom are
-the number of non-\code{NA} values in \code{x}.  There is no default;
-it must be given when any value of \code{x} is censored.}
+\item{distribution}{What distribution (Student \code{"t"}, the default, or
+normal, \code{"norm"}) should be used.  If \code{"t"}, the degrees of
+freedom are the number of non-\code{NA} values in \code{x}, and the
+reported standard deviation is that of the fitted t distribution
+(\code{scale*sqrt(df/(df - 2))}), which is \code{NA} when there are two or
+fewer values.}
 
 \item{na.rm}{A logical value indicating whether \code{NA} values should be
 stripped from \code{x} before the computation proceeds.}
@@ -64,6 +66,16 @@ attribute.
 }
 \description{
 Calculate a censored mean
+}
+\details{
+When no values are censored, the ordinary \code{mean()} and
+\code{sd()} are returned.  When there are no uncensored values, the mean
+cannot be estimated and \code{NA} is returned.  When all values are equal
+(and some, but not all, are censored), the mean is that value and the
+standard deviation is \code{NA}.
+
+Values of \code{x} must be finite unless they are censored at a finite
+limit (for example, \code{-Inf} with \code{lower = 0}).
 }
 \examples{
 # Values at or below 2 are censored (for example, below a limit of

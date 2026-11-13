@@ -12,7 +12,8 @@
 #' @param lower_limit,upper_limit The vector lower and upper limits for censoring
 #' @param mask_lower,mask_between,mask_upper Boolean masks indicating if the
 #'   value is below the lower limit, a point value, or above the upper limit
-#' @param distribution The distribution to use
+#' @param distribution The distribution to use.  For \code{"t"}, the degrees of
+#'   freedom are \code{length(x)}.
 #' @return The negative log-likelihood as a numeric scalar
 #' @references Olsen RJ. Note on the Uniqueness of the Maximum Likelihood
 #'   Estimator for the Tobit Model. Econometrica. 1978;46(5):1211-1215.
@@ -32,7 +33,7 @@ negLogLik_tobit <- function(param, x,
 
   l_x <- length(x)
   stopifnot(
-    "mask_upper, mask_between, and mask_upper may not overlap"=
+    "mask_lower, mask_between, and mask_upper may not overlap"=
       (sum(mask_lower) + sum(mask_between) + sum(mask_upper)) == l_x
   )
   stopifnot("param must have exactly 2 values"=length(param) == 2)
@@ -48,13 +49,13 @@ negLogLik_tobit <- function(param, x,
       c(
         log(gamma) + stats::dnorm(xtrans_between, log=TRUE),
         stats::pnorm(xtrans_lower, log.p=TRUE),
-        stats::pnorm(xtrans_upper, log.p=TRUE)
+        stats::pnorm(xtrans_upper, lower.tail=FALSE, log.p=TRUE)
       )
     } else if (distribution == "t") {
       c(
         log(gamma) + stats::dt(xtrans_between, df=l_x, log=TRUE),
         stats::pt(xtrans_lower, df=l_x, log.p=TRUE),
-        stats::pt(xtrans_upper, df=l_x, log.p=TRUE)
+        stats::pt(xtrans_upper, df=l_x, lower.tail=FALSE, log.p=TRUE)
       )
     } else {
       stop("Invalid distribution, please report this as a bug: ", distribution) # nocov
@@ -93,12 +94,12 @@ mean_tobit_check_x_lower_upper <- function(x, lower, upper, na.rm) {
   if (length(lower) != 1) {
     lower <- lower[!mask_na]
   } else {
-    lower <- rep(lower, length(x))
+    lower <- rep(lower, length(x_clean))
   }
   if (length(upper) != 1) {
     upper <- upper[!mask_na]
   } else {
-    upper <- rep(upper, length(x))
+    upper <- rep(upper, length(x_clean))
   }
   list(x=x_clean, lower=lower, upper=upper)
 }
@@ -117,12 +118,78 @@ mean_tobit_check_values <- function(x, na.rm) {
   if (inherits(x, what="mean_tobit")) {
     stop("'x' may not have class 'mean_tobit'")
   }
-  if (all(is.na(x))) {
+  if (length(x) == 0) {
+    ret <- as_mean_tobit(mu=NA_real_, sd=NA_real_, message="No values were given")
+  } else if (all(is.na(x))) {
     ret <- as_mean_tobit(mu=NA_real_, sd=NA_real_, message="All values were NA")
-  } else if (any(is.na(x)) & !na.rm) {
+  } else if (any(is.na(x)) && !na.rm) {
     ret <- as_mean_tobit(mu=NA_real_, sd=NA_real_, message="Some values were NA, and na.rm=FALSE")
   } else {
     ret <- stats::na.omit(x)
   }
   ret
+}
+
+#' Location and scale used to standardize data before the tobit optimization
+#'
+#' Censored values are replaced by their censoring limit, and the mean and
+#' standard deviation of the result are the location and scale.  The tobit
+#' likelihood is location-scale equivariant, so fitting \code{(x - center)/scale}
+#' and back-transforming gives the same estimate while keeping the optimizer's
+#' parameters near \code{c(0, 0)}.
+#'
+#' @inheritParams negLogLik_tobit
+#' @param lower,upper The censoring limits (the same length as \code{x})
+#' @return A list with elements \code{center} and \code{scale}
+#' @keywords internal
+#' @noRd
+tobit_standardization <- function(x, lower, upper, mask_lower, mask_upper) {
+  x_start <- x
+  x_start[mask_lower] <- lower[mask_lower]
+  x_start[mask_upper] <- upper[mask_upper]
+  scale <- stats::sd(x_start)
+  if (!(scale > 0)) {
+    # All values equal after replacing censored values with their limits; any
+    # positive scale works.
+    scale <- 1
+  }
+  list(center=mean(x_start), scale=scale)
+}
+
+#' Convert the fitted scale parameter to a standard deviation
+#'
+#' @param scale The fitted scale parameter
+#' @param distribution The distribution used for fitting (\code{"t"} or
+#'   \code{"norm"})
+#' @param df The degrees of freedom (used and checked only for the t
+#'   distribution)
+#' @return The standard deviation; \code{NA} for the t distribution when
+#'   \code{df <= 2} because its variance is not finite.
+#' @keywords internal
+#' @noRd
+tobit_sd_from_scale <- function(scale, distribution=c("t", "norm"), df) {
+  distribution <- match.arg(distribution)
+  if (distribution == "norm") {
+    return(scale)
+  }
+  stopifnot(
+    "'df' must be a single, positive, non-NA number"=
+      length(df) == 1 && !is.na(df) && df > 0
+  )
+  if (df > 2) {
+    scale*sqrt(df/(df - 2))
+  } else {
+    NA_real_
+  }
+}
+
+#' Convert an error from stats::optim() into a failed-convergence result
+#'
+#' @param e The error condition
+#' @return A list shaped like the parts of the \code{stats::optim()} result that
+#'   \code{mean_tobit()} uses
+#' @keywords internal
+#' @noRd
+tobit_optim_error <- function(e) {
+  list(convergence=-1L, message=conditionMessage(e))
 }
