@@ -7,13 +7,23 @@
 #'   \code{x < lower} and \code{x > upper} (if \code{FALSE}) to be censored?
 #'   (\code{include_equal} is overridden by setting \code{include_equal_lower}
 #'   or \code{include_equal_upper}.)
-#' @param distribution What distribution (Student \code{"t"} or normal,
-#'   \code{"norm"}) should be used.  If \code{"t"}, the degrees of freedom are
-#'   the number of non-\code{NA} values in \code{x}.  There is no default;
-#'   it must be given when any value of \code{x} is censored.
+#' @param distribution What distribution (Student \code{"t"}, the default, or
+#'   normal, \code{"norm"}) should be used.  If \code{"t"}, the degrees of
+#'   freedom are the number of non-\code{NA} values in \code{x}, and the
+#'   reported standard deviation is that of the fitted t distribution
+#'   (\code{scale*sqrt(df/(df - 2))}), which is \code{NA} when there are two or
+#'   fewer values.
 #' @param na.rm A logical value indicating whether \code{NA} values should be
 #'   stripped from \code{x} before the computation proceeds.
 #' @inheritDotParams stats::optim
+#' @details When no values are censored, the ordinary \code{mean()} and
+#'   \code{sd()} are returned.  When there are no uncensored values, the mean
+#'   cannot be estimated and \code{NA} is returned.  When all values are equal
+#'   (and some, but not all, are censored), the mean is that value and the
+#'   standard deviation is \code{NA}.
+#'
+#'   Values of \code{x} must be finite unless they are censored at a finite
+#'   limit (for example, \code{-Inf} with \code{lower = 0}).
 #' @return A 'mean_tobit' object which is a number with attributes for the
 #'   standard deviation (sd) and convergence information in the "message"
 #'   attribute.
@@ -32,8 +42,9 @@
 mean_tobit <- function(x,
                        lower=-Inf, upper=Inf,
                        include_equal=TRUE, include_equal_lower=include_equal, include_equal_upper=include_equal,
-                       distribution,
+                       distribution=c("t", "norm"),
                        na.rm=TRUE, ...) {
+  distribution <- match.arg(distribution)
   x_lower_and_upper <-
     mean_tobit_check_x_lower_upper(
       x=x,
@@ -60,21 +71,29 @@ mean_tobit <- function(x,
     } else {
       x < lower
     }
+  # A value can satisfy both masks only if lower >= upper, which is refused
+  # above, so every value is in exactly one mask.
   mask_between <- !(mask_upper | mask_lower)
+  stopifnot(
+    "'x' must be finite unless it is censored at a finite limit"=
+      all(is.finite(x[mask_between])) &&
+      all(is.finite(lower[mask_lower])) &&
+      all(is.finite(upper[mask_upper]))
+  )
   if (all(mask_between)) {
     ret <- as_mean_tobit(mu = mean(x), sd = stats::sd(x), message = "All values between lower and upper, standard mean/sd calculated")
   } else if (all(mask_upper)) {
     ret <- as_mean_tobit(mu=NA_real_, sd=NA_real_, message="all values above upper")
   } else if (all(mask_lower)) {
     ret <- as_mean_tobit(mu=NA_real_, sd=NA_real_, message="all values below lower")
+  } else if (!any(mask_between)) {
+    ret <- as_mean_tobit(mu=NA_real_, sd=NA_real_, message="no values between lower and upper")
   } else if (all(x == x[1])) {
-    ret <- as_mean_tobit(mu=x[1], sd=0, message="single unique value")
+    ret <- as_mean_tobit(mu=x[1], sd=NA_real_, message="single unique value")
   } else {
-    lgamma <- log(1/stats::sd(x))
-    delta <- mean(x)*stats::sd(x)
     ret_prep <-
       stats::optim(
-        par=c(lgamma, delta),
+        par=tobit_start_values(x=x, lower=lower, upper=upper, mask_lower=mask_lower, mask_upper=mask_upper),
         fn=negLogLik_tobit,
         method="L-BFGS-B",
         x=x,
@@ -87,9 +106,11 @@ mean_tobit <- function(x,
         ...
       )
     if (ret_prep$convergence == 0) {
-      # Successful convergence
-      sd_est <- exp(1/ret_prep$par[1])
-      mu_est <- ret_prep$par[2]/exp(ret_prep$par[1])
+      # Successful convergence; param = c(log(gamma), delta) with
+      # gamma = 1/scale and delta = mu/scale (see negLogLik_tobit())
+      scale_est <- exp(-ret_prep$par[1])
+      mu_est <- ret_prep$par[2]*scale_est
+      sd_est <- tobit_sd_from_scale(scale=scale_est, distribution=distribution, df=length(x))
       ret <-
         as_mean_tobit(
           mu=mu_est,
@@ -145,6 +166,8 @@ sd_tobit <- function(...) {
 #'   \code{log(x)} (sd) and convergence information in the "message"
 #'   attribute.
 #' @family Censored Descriptive Statistics
+#' @examples
+#' geomean_tobit(c(2, 2, 3, 5, 6, 8), lower = 2, distribution = "norm")
 #' @export
 geomean_tobit <- function(x, lower=0, upper=Inf, na.rm=TRUE, ...) {
   x_lower_and_upper <-
@@ -180,7 +203,7 @@ geomean_tobit <- function(x, lower=0, upper=Inf, na.rm=TRUE, ...) {
   }
   ret_prep <- mean_tobit(x=log(x), lower=log(lower), upper=log(upper), na.rm=na.rm, ...)
   as_geomean_tobit(
-    mu=exp(ret_prep),
+    mu=exp(as.numeric(ret_prep)),
     sd=attr(ret_prep, "sd", exact=TRUE),
     message=attr(ret_prep, "message", exact=TRUE)
   )

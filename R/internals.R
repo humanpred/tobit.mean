@@ -12,7 +12,8 @@
 #' @param lower_limit,upper_limit The vector lower and upper limits for censoring
 #' @param mask_lower,mask_between,mask_upper Boolean masks indicating if the
 #'   value is below the lower limit, a point value, or above the upper limit
-#' @param distribution The distribution to use
+#' @param distribution The distribution to use.  For \code{"t"}, the degrees of
+#'   freedom are \code{length(x)}.
 #' @return The negative log-likelihood as a numeric scalar
 #' @references Olsen RJ. Note on the Uniqueness of the Maximum Likelihood
 #'   Estimator for the Tobit Model. Econometrica. 1978;46(5):1211-1215.
@@ -32,7 +33,7 @@ negLogLik_tobit <- function(param, x,
 
   l_x <- length(x)
   stopifnot(
-    "mask_upper, mask_between, and mask_upper may not overlap"=
+    "mask_lower, mask_between, and mask_upper may not overlap"=
       (sum(mask_lower) + sum(mask_between) + sum(mask_upper)) == l_x
   )
   stopifnot("param must have exactly 2 values"=length(param) == 2)
@@ -48,13 +49,13 @@ negLogLik_tobit <- function(param, x,
       c(
         log(gamma) + stats::dnorm(xtrans_between, log=TRUE),
         stats::pnorm(xtrans_lower, log.p=TRUE),
-        stats::pnorm(xtrans_upper, log.p=TRUE)
+        stats::pnorm(xtrans_upper, lower.tail=FALSE, log.p=TRUE)
       )
     } else if (distribution == "t") {
       c(
         log(gamma) + stats::dt(xtrans_between, df=l_x, log=TRUE),
         stats::pt(xtrans_lower, df=l_x, log.p=TRUE),
-        stats::pt(xtrans_upper, df=l_x, log.p=TRUE)
+        stats::pt(xtrans_upper, df=l_x, lower.tail=FALSE, log.p=TRUE)
       )
     } else {
       stop("Invalid distribution, please report this as a bug: ", distribution) # nocov
@@ -93,12 +94,12 @@ mean_tobit_check_x_lower_upper <- function(x, lower, upper, na.rm) {
   if (length(lower) != 1) {
     lower <- lower[!mask_na]
   } else {
-    lower <- rep(lower, length(x))
+    lower <- rep(lower, length(x_clean))
   }
   if (length(upper) != 1) {
     upper <- upper[!mask_na]
   } else {
-    upper <- rep(upper, length(x))
+    upper <- rep(upper, length(x_clean))
   }
   list(x=x_clean, lower=lower, upper=upper)
 }
@@ -117,12 +118,56 @@ mean_tobit_check_values <- function(x, na.rm) {
   if (inherits(x, what="mean_tobit")) {
     stop("'x' may not have class 'mean_tobit'")
   }
-  if (all(is.na(x))) {
+  if (length(x) == 0) {
+    ret <- as_mean_tobit(mu=NA_real_, sd=NA_real_, message="No values were given")
+  } else if (all(is.na(x))) {
     ret <- as_mean_tobit(mu=NA_real_, sd=NA_real_, message="All values were NA")
-  } else if (any(is.na(x)) & !na.rm) {
+  } else if (any(is.na(x)) && !na.rm) {
     ret <- as_mean_tobit(mu=NA_real_, sd=NA_real_, message="Some values were NA, and na.rm=FALSE")
   } else {
     ret <- stats::na.omit(x)
   }
   ret
+}
+
+#' Starting values for the tobit optimization
+#'
+#' Censored values are replaced by their censoring limit, and the mean and
+#' standard deviation of the result give the starting parameters.
+#'
+#' @inheritParams negLogLik_tobit
+#' @param lower,upper The censoring limits (the same length as \code{x})
+#' @return \code{c(log(gamma), delta)} as used by \code{negLogLik_tobit()}
+#' @keywords internal
+#' @noRd
+tobit_start_values <- function(x, lower, upper, mask_lower, mask_upper) {
+  x_start <- x
+  x_start[mask_lower] <- lower[mask_lower]
+  x_start[mask_upper] <- upper[mask_upper]
+  sd_start <- stats::sd(x_start)
+  if (!(sd_start > 0)) {
+    # All values equal after replacing censored values with their limits; any
+    # positive scale lets the optimizer start.
+    sd_start <- 1
+  }
+  c(log(1/sd_start), mean(x_start)/sd_start)
+}
+
+#' Convert the fitted scale parameter to a standard deviation
+#'
+#' @param scale The fitted scale parameter
+#' @param distribution The distribution used for fitting
+#' @param df The degrees of freedom (used only for the t distribution)
+#' @return The standard deviation; \code{NA} for the t distribution when
+#'   \code{df <= 2} because its variance is not finite.
+#' @keywords internal
+#' @noRd
+tobit_sd_from_scale <- function(scale, distribution, df) {
+  if (distribution == "norm") {
+    scale
+  } else if (df > 2) {
+    scale*sqrt(df/(df - 2))
+  } else {
+    NA_real_
+  }
 }
