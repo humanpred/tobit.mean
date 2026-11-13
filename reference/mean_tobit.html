@@ -46,7 +46,7 @@
 <span>  include_equal <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  include_equal_lower <span class="op">=</span> <span class="va">include_equal</span>,</span>
 <span>  include_equal_upper <span class="op">=</span> <span class="va">include_equal</span>,</span>
-<span>  <span class="va">distribution</span>,</span>
+<span>  distribution <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"t"</span>, <span class="st">"norm"</span><span class="op">)</span>,</span>
 <span>  na.rm <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -73,10 +73,12 @@ or <code>include_equal_upper</code>.)</p></dd>
 
 
 <dt id="arg-distribution">distribution<a class="anchor" aria-label="anchor" href="#arg-distribution"></a></dt>
-<dd><p>What distribution (Student <code>"t"</code> or normal,
-<code>"norm"</code>) should be used.  If <code>"t"</code>, the degrees of freedom are
-the number of non-<code>NA</code> values in <code>x</code>.  There is no default;
-it must be given when any value of <code>x</code> is censored.</p></dd>
+<dd><p>What distribution (Student <code>"t"</code>, the default, or
+normal, <code>"norm"</code>) should be used.  If <code>"t"</code>, the degrees of
+freedom are the number of non-<code>NA</code> values in <code>x</code>, and the
+reported standard deviation is that of the fitted t distribution
+(<code>scale*sqrt(df/(df - 2))</code>), which is <code>NA</code> when there are two or
+fewer values.</p></dd>
 
 
 <dt id="arg-na-rm">na.rm<a class="anchor" aria-label="anchor" href="#arg-na-rm"></a></dt>
@@ -126,6 +128,16 @@ standard deviation (sd) and convergence information in the "message"
 attribute.</p>
     </div>
     <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>When no values are censored, the ordinary <code><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean()</a></code> and
+<code><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd()</a></code> are returned.  When there are no uncensored values, the mean
+cannot be estimated and <code>NA</code> is returned.  When all values are equal
+(and some, but not all, are censored), the mean is that value and the
+standard deviation is <code>NA</code>.</p>
+<p>Values of <code>x</code> must be finite unless they are censored at a finite
+limit (for example, <code>-Inf</code> with <code>lower = 0</code>).</p>
+    </div>
+    <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
     <p>Tobin J. Estimation of Relationships for Limited Dependent
 Variables. Econometrica. 1958;26(1):24-36. <a href="https://doi.org/10.2307/1907382" class="external-link">doi:10.2307/1907382</a></p>
@@ -145,9 +157,9 @@ the Tobit Model. Econometrica. 1978;46(5):1211-1215.
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Values at or below 2 are censored (for example, below a limit of</span></span></span>
 <span class="r-in"><span><span class="co"># quantification)</span></span></span>
 <span class="r-in"><span><span class="fu">mean_tobit</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">5</span>, <span class="fl">6</span>, <span class="fl">8</span><span class="op">)</span>, lower <span class="op">=</span> <span class="fl">2</span>, distribution <span class="op">=</span> <span class="st">"norm"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 3.682551</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 3.682552</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"sd")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.4132036</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 3.100173</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"message")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Successful convergence.  message from stats::optim(): CONVERGENCE: REL_REDUCTION_OF_F &lt;= FACTR*EPSMCH"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"class")</span>

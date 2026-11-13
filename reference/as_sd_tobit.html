@@ -48,6 +48,9 @@
 <span><span class="fu">as_sd_tobit</span><span class="op">(</span><span class="va">mu</span>, <span class="va">sd</span>, message <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'geomean_tobit'</span></span>
+<span><span class="fu">as_sd_tobit</span><span class="op">(</span><span class="va">mu</span>, <span class="va">sd</span>, message <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'sd_tobit'</span></span>
 <span><span class="fu">as_sd_tobit</span><span class="op">(</span><span class="va">mu</span>, <span class="va">sd</span>, message <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -60,7 +63,8 @@
 
 
 <dt id="arg-sd">sd<a class="anchor" aria-label="anchor" href="#arg-sd"></a></dt>
-<dd><p>The arithmetic standard deviation</p></dd>
+<dd><p>The arithmetic standard deviation (<code>NA</code> when it cannot be
+estimated; it must be <code>NA</code> when <code>mu</code> is <code>NA</code>)</p></dd>
 
 
 <dt id="arg-message">message<a class="anchor" aria-label="anchor" href="#arg-message"></a></dt>
@@ -78,6 +82,7 @@
 <ul><li><p><code>as_sd_tobit(mean_tobit)</code>: Convert a 'mean_tobit' object to a 'sd_tobit' object</p></li>
 <li><p><code>as_sd_tobit(geomean_tobit)</code>: Convert a 'geomean_tobit' object to a 'sd_tobit'
 object</p></li>
+<li><p><code>as_sd_tobit(sd_tobit)</code>: Return a 'sd_tobit' object unchanged</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

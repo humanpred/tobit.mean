@@ -45,6 +45,9 @@
 <span><span class="fu">as_cv_tobit</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'geomean_tobit'</span></span>
+<span><span class="fu">as_cv_tobit</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'sd_tobit'</span></span>
 <span><span class="fu">as_cv_tobit</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -66,6 +69,9 @@
 <ul><li><p><code>as_cv_tobit(mean_tobit)</code>: CV for the arithmetic mean: <code>100*sd/mu</code></p></li>
 <li><p><code>as_cv_tobit(geomean_tobit)</code>: CV for the geometric mean:
 <code>100*sqrt(exp(sd^2)-1)</code></p></li>
+<li><p><code>as_cv_tobit(sd_tobit)</code>: CV from a 'sd_tobit' object, using the geometric
+formula when it came from a 'geomean_tobit' object and the arithmetic
+formula otherwise</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

@@ -12,7 +12,7 @@ mean_tobit(
   include_equal = TRUE,
   include_equal_lower = include_equal,
   include_equal_upper = include_equal,
-  distribution,
+  distribution = c("t", "norm"),
   na.rm = TRUE,
   ...
 )
@@ -37,10 +37,11 @@ mean_tobit(
 
 - distribution:
 
-  What distribution (Student `"t"` or normal, `"norm"`) should be used.
-  If `"t"`, the degrees of freedom are the number of non-`NA` values in
-  `x`. There is no default; it must be given when any value of `x` is
-  censored.
+  What distribution (Student `"t"`, the default, or normal, `"norm"`)
+  should be used. If `"t"`, the degrees of freedom are the number of
+  non-`NA` values in `x`, and the reported standard deviation is that of
+  the fitted t distribution (`scale*sqrt(df/(df - 2))`), which is `NA`
+  when there are two or fewer values.
 
 - na.rm:
 
@@ -96,6 +97,18 @@ mean_tobit(
 A 'mean_tobit' object which is a number with attributes for the standard
 deviation (sd) and convergence information in the "message" attribute.
 
+## Details
+
+When no values are censored, the ordinary
+[`mean()`](https://rdrr.io/r/base/mean.html) and
+[`sd()`](https://rdrr.io/r/stats/sd.html) are returned. When there are
+no uncensored values, the mean cannot be estimated and `NA` is returned.
+When all values are equal (and some, but not all, are censored), the
+mean is that value and the standard deviation is `NA`.
+
+Values of `x` must be finite unless they are censored at a finite limit
+(for example, `-Inf` with `lower = 0`).
+
 ## References
 
 Tobin J. Estimation of Relationships for Limited Dependent Variables.
@@ -118,9 +131,9 @@ Other Censored Descriptive Statistics:
 # Values at or below 2 are censored (for example, below a limit of
 # quantification)
 mean_tobit(c(2, 2, 3, 5, 6, 8), lower = 2, distribution = "norm")
-#> [1] 3.682551
+#> [1] 3.682552
 #> attr(,"sd")
-#> [1] 0.4132036
+#> [1] 3.100173
 #> attr(,"message")
 #> [1] "Successful convergence.  message from stats::optim(): CONVERGENCE: REL_REDUCTION_OF_F <= FACTR*EPSMCH"
 #> attr(,"class")

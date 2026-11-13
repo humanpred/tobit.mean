@@ -67,10 +67,12 @@ bounds consider <code>x &lt;= lower</code> and <code>x &gt;= upper</code> (if <c
 or <code>include_equal_upper</code>.)</p></dd>
 
     <dt><code>distribution</code></dt>
-<dd><p>What distribution (Student <code>"t"</code> or normal,
-<code>"norm"</code>) should be used.  If <code>"t"</code>, the degrees of freedom are
-the number of non-<code>NA</code> values in <code>x</code>.  There is no default;
-it must be given when any value of <code>x</code> is censored.</p></dd>
+<dd><p>What distribution (Student <code>"t"</code>, the default, or
+normal, <code>"norm"</code>) should be used.  If <code>"t"</code>, the degrees of
+freedom are the number of non-<code>NA</code> values in <code>x</code>, and the
+reported standard deviation is that of the fitted t distribution
+(<code>scale*sqrt(df/(df - 2))</code>), which is <code>NA</code> when there are two or
+fewer values.</p></dd>
 
     <dt><code>na.rm</code></dt>
 <dd><p>A logical value indicating whether <code>NA</code> values should be
@@ -94,9 +96,9 @@ stripped from <code>x</code> before the computation proceeds.</p></dd>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">sd_tobit</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">5</span>, <span class="fl">6</span>, <span class="fl">8</span><span class="op">)</span>, lower <span class="op">=</span> <span class="fl">2</span>, distribution <span class="op">=</span> <span class="st">"norm"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.4132036</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 3.100173</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"mu")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 3.682551</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 3.682552</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"message")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Successful convergence.  message from stats::optim(): CONVERGENCE: REL_REDUCTION_OF_F &lt;= FACTR*EPSMCH"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"class")</span>

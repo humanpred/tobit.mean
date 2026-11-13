@@ -19,7 +19,8 @@ as_mean_tobit(mu, sd, message = NULL)
 
 - sd:
 
-  The arithmetic standard deviation
+  The arithmetic standard deviation (`NA` when it cannot be estimated;
+  it must be `NA` when `mu` is `NA`)
 
 - message:
 

@@ -36,10 +36,12 @@ sd_tobit(...)
 
   `distribution`
 
-  :   What distribution (Student `"t"` or normal, `"norm"`) should be
-      used. If `"t"`, the degrees of freedom are the number of non-`NA`
-      values in `x`. There is no default; it must be given when any
-      value of `x` is censored.
+  :   What distribution (Student `"t"`, the default, or normal,
+      `"norm"`) should be used. If `"t"`, the degrees of freedom are the
+      number of non-`NA` values in `x`, and the reported standard
+      deviation is that of the fitted t distribution
+      (`scale*sqrt(df/(df - 2))`), which is `NA` when there are two or
+      fewer values.
 
   `na.rm`
 
@@ -60,9 +62,9 @@ Other Censored Descriptive Statistics:
 
 ``` r
 sd_tobit(c(2, 2, 3, 5, 6, 8), lower = 2, distribution = "norm")
-#> [1] 0.4132036
+#> [1] 3.100173
 #> attr(,"mu")
-#> [1] 3.682551
+#> [1] 3.682552
 #> attr(,"message")
 #> [1] "Successful convergence.  message from stats::optim(): CONVERGENCE: REL_REDUCTION_OF_F <= FACTR*EPSMCH"
 #> attr(,"class")

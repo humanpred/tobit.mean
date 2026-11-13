@@ -42,10 +42,12 @@ geomean_tobit(x, lower = 0, upper = Inf, na.rm = TRUE, ...)
 
   `distribution`
 
-  :   What distribution (Student `"t"` or normal, `"norm"`) should be
-      used. If `"t"`, the degrees of freedom are the number of non-`NA`
-      values in `x`. There is no default; it must be given when any
-      value of `x` is censored.
+  :   What distribution (Student `"t"`, the default, or normal,
+      `"norm"`) should be used. If `"t"`, the degrees of freedom are the
+      number of non-`NA` values in `x`, and the reported standard
+      deviation is that of the fitted t distribution
+      (`scale*sqrt(df/(df - 2))`), which is `NA` when there are two or
+      fewer values.
 
 ## Value
 
@@ -58,3 +60,16 @@ which is a number with attributes for the standard deviation of `log(x)`
 Other Censored Descriptive Statistics:
 [`mean_tobit()`](https://humanpred.github.io/tobit.mean/reference/mean_tobit.md),
 [`sd_tobit()`](https://humanpred.github.io/tobit.mean/reference/sd_tobit.md)
+
+## Examples
+
+``` r
+geomean_tobit(c(2, 2, 3, 5, 6, 8), lower = 2, distribution = "norm")
+#> [1] 3.235746
+#> attr(,"sd")
+#> [1] 0.7585052
+#> attr(,"message")
+#> [1] "Successful convergence.  message from stats::optim(): CONVERGENCE: REL_REDUCTION_OF_F <= FACTR*EPSMCH"
+#> attr(,"class")
+#> [1] "geomean_tobit" "mean_tobit"   
+```

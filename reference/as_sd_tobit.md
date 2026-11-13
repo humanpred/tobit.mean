@@ -15,6 +15,9 @@ as_sd_tobit(mu, sd, message = NULL)
 
 # S3 method for class 'geomean_tobit'
 as_sd_tobit(mu, sd, message = NULL)
+
+# S3 method for class 'sd_tobit'
+as_sd_tobit(mu, sd, message = NULL)
 ```
 
 ## Arguments
@@ -25,7 +28,8 @@ as_sd_tobit(mu, sd, message = NULL)
 
 - sd:
 
-  The arithmetic standard deviation
+  The arithmetic standard deviation (`NA` when it cannot be estimated;
+  it must be `NA` when `mu` is `NA`)
 
 - message:
 
@@ -43,6 +47,8 @@ mean) and 'message'.
 
 - `as_sd_tobit(geomean_tobit)`: Convert a 'geomean_tobit' object to a
   'sd_tobit' object
+
+- `as_sd_tobit(sd_tobit)`: Return a 'sd_tobit' object unchanged
 
 ## See also
 

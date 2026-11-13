@@ -39,7 +39,8 @@ negLogLik_tobit(
 
 - distribution:
 
-  The distribution to use
+  The distribution to use. For `"t"`, the degrees of freedom are
+  `length(x)`.
 
 ## Value
 

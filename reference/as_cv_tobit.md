@@ -12,6 +12,9 @@ as_cv_tobit(x)
 
 # S3 method for class 'geomean_tobit'
 as_cv_tobit(x)
+
+# S3 method for class 'sd_tobit'
+as_cv_tobit(x)
 ```
 
 ## Arguments
@@ -30,6 +33,10 @@ The percent coefficient of variation as a numeric scalar
 
 - `as_cv_tobit(geomean_tobit)`: CV for the geometric mean:
   `100*sqrt(exp(sd^2)-1)`
+
+- `as_cv_tobit(sd_tobit)`: CV from a 'sd_tobit' object, using the
+  geometric formula when it came from a 'geomean_tobit' object and the
+  arithmetic formula otherwise
 
 ## See also
 
