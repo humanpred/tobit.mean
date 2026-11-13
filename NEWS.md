@@ -31,5 +31,8 @@
   example, some above `upper` and the rest below `lower`).
 * `x` must be finite unless it is censored at a finite limit.
 * A zero-length `x` gives `NA` with the message "No values were given".
-* Optimization starting values come from the data with censored values
-  replaced by their limits.
+* The data are centered and scaled before optimization (censored values
+  replaced by their limits), so data with a small spread or a large offset
+  no longer make `stats::optim()` fail with non-finite likelihood values.
+  An error from `stats::optim()` is reported as failed
+  convergence.

@@ -91,25 +91,31 @@ mean_tobit <- function(x,
   } else if (all(x == x[1])) {
     ret <- as_mean_tobit(mu=x[1], sd=NA_real_, message="single unique value")
   } else {
+    std <- tobit_standardization(x=x, lower=lower, upper=upper, mask_lower=mask_lower, mask_upper=mask_upper)
     ret_prep <-
-      stats::optim(
-        par=tobit_start_values(x=x, lower=lower, upper=upper, mask_lower=mask_lower, mask_upper=mask_upper),
-        fn=negLogLik_tobit,
-        method="L-BFGS-B",
-        x=x,
-        lower_limit=lower,
-        upper_limit=upper,
-        mask_lower=mask_lower,
-        mask_between=mask_between,
-        mask_upper=mask_upper,
-        distribution=distribution,
-        ...
+      tryCatch(
+        stats::optim(
+          par=c(0, 0),
+          fn=negLogLik_tobit,
+          method="L-BFGS-B",
+          x=(x - std$center)/std$scale,
+          lower_limit=(lower - std$center)/std$scale,
+          upper_limit=(upper - std$center)/std$scale,
+          mask_lower=mask_lower,
+          mask_between=mask_between,
+          mask_upper=mask_upper,
+          distribution=distribution,
+          ...
+        ),
+        error=tobit_optim_error
       )
     if (ret_prep$convergence == 0) {
       # Successful convergence; param = c(log(gamma), delta) with
-      # gamma = 1/scale and delta = mu/scale (see negLogLik_tobit())
-      scale_est <- exp(-ret_prep$par[1])
-      mu_est <- ret_prep$par[2]*scale_est
+      # gamma = 1/scale and delta = mu/scale (see negLogLik_tobit()) on the
+      # standardized data
+      scale_std <- exp(-ret_prep$par[1])
+      scale_est <- std$scale*scale_std
+      mu_est <- std$center + std$scale*ret_prep$par[2]*scale_std
       sd_est <- tobit_sd_from_scale(scale=scale_est, distribution=distribution, df=length(x))
       ret <-
         as_mean_tobit(

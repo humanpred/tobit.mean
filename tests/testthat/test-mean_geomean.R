@@ -145,10 +145,32 @@ test_that("mean_tobit degenerate censoring patterns", {
 })
 
 test_that("mean_tobit reports failed convergence", {
-  expect_equal(
-    mean_tobit(1:10, lower=5, distribution="norm", control=list(maxit=1)),
-    as_mean_tobit(NA_real_, NA_real_, "Failed convergence.  message from stats::optim(): NEW_X")
+  result <- mean_tobit(1:10, lower=5, distribution="norm", control=list(maxit=1))
+  expect_s3_class(result, "mean_tobit")
+  expect_true(is.na(as.numeric(result)))
+  expect_true(is.na(attr(result, "sd", exact=TRUE)))
+  expect_match(
+    attr(result, "message", exact=TRUE),
+    "^Failed convergence\\.  message from stats::optim\\(\\): "
   )
+})
+
+test_that("mean_tobit is stable for data with a small spread and a large offset", {
+  # Without standardization, the optimizer stepped to non-finite likelihoods
+  # here and stats::optim() raised an error.
+  expect_tobit(
+    mean_tobit(
+      c(4.997, 5.005, 5.014, 5.006, 5.005, 5.012, 5.011, 5.001),
+      lower=5.011718, distribution="norm"
+    ),
+    mu=5.010303394339, sd=0.002111172294, message=msg_converged,
+    tolerance=1e-4
+  )
+  # Shifting and scaling the data shifts and scales the estimate
+  base <- mean_tobit(1:10, lower=5, upper=8, distribution="norm")
+  shifted <- mean_tobit(1e5 + (1:10)/1e3, lower=1e5 + 5/1e3, upper=1e5 + 8/1e3, distribution="norm")
+  expect_equal(as.numeric(shifted), 1e5 + as.numeric(base)/1e3, tolerance=1e-10)
+  expect_equal(attr(shifted, "sd", exact=TRUE), attr(base, "sd", exact=TRUE)/1e3, tolerance=1e-4)
 })
 
 test_that("mean_tobit requires finite x unless censored at a finite limit", {

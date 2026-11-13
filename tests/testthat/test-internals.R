@@ -117,22 +117,29 @@ test_that("negLogLik_tobit for the normal distribution", {
   )
 })
 
-test_that("tobit_start_values", {
+test_that("tobit_standardization", {
   # Censored values are replaced by their limits: c(5, 5, 6, 10)
   expect_equal(
-    tobit_start_values(
+    tobit_standardization(
       x=c(1, 5, 6, 12), lower=rep(5, 4), upper=rep(10, 4),
       mask_lower=c(TRUE, TRUE, FALSE, FALSE), mask_upper=c(FALSE, FALSE, FALSE, TRUE)
     ),
-    c(log(1/sd(c(5, 5, 6, 10))), mean(c(5, 5, 6, 10))/sd(c(5, 5, 6, 10)))
+    list(center=mean(c(5, 5, 6, 10)), scale=sd(c(5, 5, 6, 10)))
   )
   # All equal after replacement uses a unit scale
   expect_equal(
-    tobit_start_values(
+    tobit_standardization(
       x=c(4, 5), lower=c(5, 5), upper=c(Inf, Inf),
       mask_lower=c(TRUE, FALSE), mask_upper=c(FALSE, FALSE)
     ),
-    c(0, 5)
+    list(center=5, scale=1)
+  )
+})
+
+test_that("tobit_optim_error", {
+  expect_equal(
+    tobit_optim_error(simpleError("foo")),
+    list(convergence=-1L, message="foo")
   )
 })
 

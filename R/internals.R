@@ -130,27 +130,30 @@ mean_tobit_check_values <- function(x, na.rm) {
   ret
 }
 
-#' Starting values for the tobit optimization
+#' Location and scale used to standardize data before the tobit optimization
 #'
 #' Censored values are replaced by their censoring limit, and the mean and
-#' standard deviation of the result give the starting parameters.
+#' standard deviation of the result are the location and scale.  The tobit
+#' likelihood is location-scale equivariant, so fitting \code{(x - center)/scale}
+#' and back-transforming gives the same estimate while keeping the optimizer's
+#' parameters near \code{c(0, 0)}.
 #'
 #' @inheritParams negLogLik_tobit
 #' @param lower,upper The censoring limits (the same length as \code{x})
-#' @return \code{c(log(gamma), delta)} as used by \code{negLogLik_tobit()}
+#' @return A list with elements \code{center} and \code{scale}
 #' @keywords internal
 #' @noRd
-tobit_start_values <- function(x, lower, upper, mask_lower, mask_upper) {
+tobit_standardization <- function(x, lower, upper, mask_lower, mask_upper) {
   x_start <- x
   x_start[mask_lower] <- lower[mask_lower]
   x_start[mask_upper] <- upper[mask_upper]
-  sd_start <- stats::sd(x_start)
-  if (!(sd_start > 0)) {
+  scale <- stats::sd(x_start)
+  if (!(scale > 0)) {
     # All values equal after replacing censored values with their limits; any
-    # positive scale lets the optimizer start.
-    sd_start <- 1
+    # positive scale works.
+    scale <- 1
   }
-  c(log(1/sd_start), mean(x_start)/sd_start)
+  list(center=mean(x_start), scale=scale)
 }
 
 #' Convert the fitted scale parameter to a standard deviation
@@ -170,4 +173,15 @@ tobit_sd_from_scale <- function(scale, distribution, df) {
   } else {
     NA_real_
   }
+}
+
+#' Convert an error from stats::optim() into a failed-convergence result
+#'
+#' @param e The error condition
+#' @return A list shaped like the parts of the \code{stats::optim()} result that
+#'   \code{mean_tobit()} uses
+#' @keywords internal
+#' @noRd
+tobit_optim_error <- function(e) {
+  list(convergence=-1L, message=conditionMessage(e))
 }
