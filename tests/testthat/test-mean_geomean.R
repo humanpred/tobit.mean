@@ -15,7 +15,14 @@ expect_tobit <- function(object, mu, sd, message = NULL, tolerance = tol_mle) {
   }
 }
 
-msg_converged <- "Successful convergence.  message from stats::optim(): CONVERGENCE: REL_REDUCTION_OF_F <= FACTR*EPSMCH"
+# The message stats::optim() gives when L-BFGS-B converges by relative
+# reduction of the objective, taken from a quadratic that always converges so
+# that the expected text follows any change in stats::optim().
+msg_converged <-
+  paste(
+    "Successful convergence.  message from stats::optim():",
+    stats::optim(c(0, 0), function(p) sum((p - c(1, 2))^2), method="L-BFGS-B")$message
+  )
 
 test_that("mean_tobit without censoring is the ordinary mean and sd", {
   expect_equal(
