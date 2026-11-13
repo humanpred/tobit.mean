@@ -6,3 +6,4 @@ docs
 *.Rcheck/
 *.tar.gz
 .claude/
+tests/testthat/_problems/
