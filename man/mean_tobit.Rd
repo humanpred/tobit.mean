@@ -61,8 +61,9 @@ stripped from \code{x} before the computation proceeds.}
 }
 \value{
 A 'mean_tobit' object which is a number with attributes for the
-standard deviation (sd) and convergence information in the "message"
-attribute.
+standard deviation (sd), convergence information in the "message"
+attribute, and how the result was reached in the "status" attribute, one
+of \code{tobit_status_codes$status}.
 }
 \description{
 Calculate a censored mean
@@ -93,6 +94,7 @@ the Tobit Model. Econometrica. 1978;46(5):1211-1215.
 \seealso{
 Other Censored Descriptive Statistics:
 \code{\link[=geomean_tobit]{geomean_tobit()}},
-\code{\link[=sd_tobit]{sd_tobit()}}
+\code{\link[=sd_tobit]{sd_tobit()}},
+\code{\link{tobit_status_codes}}
 }
 \concept{Censored Descriptive Statistics}

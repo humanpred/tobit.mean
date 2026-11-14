@@ -8,15 +8,15 @@
 \alias{as_sd_tobit.sd_tobit}
 \title{Create or extract the standard deviation from a mean_tobit object}
 \usage{
-as_sd_tobit(mu, sd, message = NULL)
+as_sd_tobit(mu, sd, message = NULL, status = NULL)
 
-\method{as_sd_tobit}{default}(mu, sd, message = NULL)
+\method{as_sd_tobit}{default}(mu, sd, message = NULL, status = NULL)
 
-\method{as_sd_tobit}{mean_tobit}(mu, sd, message = NULL)
+\method{as_sd_tobit}{mean_tobit}(mu, sd, message = NULL, status = NULL)
 
-\method{as_sd_tobit}{geomean_tobit}(mu, sd, message = NULL)
+\method{as_sd_tobit}{geomean_tobit}(mu, sd, message = NULL, status = NULL)
 
-\method{as_sd_tobit}{sd_tobit}(mu, sd, message = NULL)
+\method{as_sd_tobit}{sd_tobit}(mu, sd, message = NULL, status = NULL)
 }
 \arguments{
 \item{mu}{The arithmetic mean}
@@ -25,10 +25,13 @@ as_sd_tobit(mu, sd, message = NULL)
 estimated; it must be \code{NA} when \code{mu} is \code{NA})}
 
 \item{message}{Additional information about the mean}
+
+\item{status}{\code{NULL}, or how the mean was reached: one of
+\code{tobit_status_codes$status}}
 }
 \value{
 A 'sd_tobit' class object which is a number with attributes of 'mu'
-(the mean) and 'message'.
+(the mean), 'message', and (when given) 'status'.
 }
 \description{
 Create or extract the standard deviation from a mean_tobit object

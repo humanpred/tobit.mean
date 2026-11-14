@@ -5,9 +5,9 @@
 \alias{as_mean_tobit.default}
 \title{Create or cast to a mean_tobit object}
 \usage{
-as_mean_tobit(mu, sd, message = NULL)
+as_mean_tobit(mu, sd, message = NULL, status = NULL)
 
-\method{as_mean_tobit}{default}(mu, sd, message = NULL)
+\method{as_mean_tobit}{default}(mu, sd, message = NULL, status = NULL)
 }
 \arguments{
 \item{mu}{The arithmetic mean}
@@ -16,10 +16,13 @@ as_mean_tobit(mu, sd, message = NULL)
 estimated; it must be \code{NA} when \code{mu} is \code{NA})}
 
 \item{message}{Additional information about the mean}
+
+\item{status}{\code{NULL}, or how the mean was reached: one of
+\code{tobit_status_codes$status}}
 }
 \value{
 A 'mean_tobit' class object which is a number with attributes for
-'sd' and 'message'.
+'sd', 'message', and (when given) 'status'.
 }
 \description{
 Create or cast to a mean_tobit object

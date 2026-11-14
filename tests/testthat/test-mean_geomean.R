@@ -30,6 +30,7 @@ test_that("mean_tobit without censoring is the ordinary mean and sd", {
     structure(
       5.5, sd = stats::sd(1:10),
       message = "All values between lower and upper, standard mean/sd calculated",
+      status = "uncensored",
       class = "mean_tobit"
     )
   )
@@ -116,38 +117,38 @@ test_that("mean_tobit handles NA values", {
   )
   expect_equal(
     mean_tobit(c(NA, 1:10), lower=5, na.rm=FALSE),
-    as_mean_tobit(NA_real_, NA_real_, "Some values were NA, and na.rm=FALSE")
+    as_mean_tobit(NA_real_, NA_real_, "Some values were NA, and na.rm=FALSE", "na_not_removed")
   )
   expect_equal(
     mean_tobit(c(NA, NA)),
-    as_mean_tobit(NA_real_, NA_real_, "All values were NA")
+    as_mean_tobit(NA_real_, NA_real_, "All values were NA", "all_na")
   )
   expect_equal(
     mean_tobit(numeric(0)),
-    as_mean_tobit(NA_real_, NA_real_, "No values were given")
+    as_mean_tobit(NA_real_, NA_real_, "No values were given", "no_values")
   )
 })
 
 test_that("mean_tobit degenerate censoring patterns", {
   expect_equal(
     mean_tobit(1:3, upper=1),
-    as_mean_tobit(NA_real_, NA_real_, "all values above upper")
+    as_mean_tobit(NA_real_, NA_real_, "all values above upper", "all_above_upper")
   )
   expect_equal(
     mean_tobit(1:3, lower=3),
-    as_mean_tobit(NA_real_, NA_real_, "all values below lower")
+    as_mean_tobit(NA_real_, NA_real_, "all values below lower", "all_below_lower")
   )
   expect_equal(
     mean_tobit(c(1, 10), lower=1, upper=10),
-    as_mean_tobit(NA_real_, NA_real_, "no values between lower and upper")
+    as_mean_tobit(NA_real_, NA_real_, "no values between lower and upper", "none_between")
   )
   expect_equal(
     mean_tobit(c(1, 1, 1), lower=c(1, 0, 0)),
-    as_mean_tobit(1, NA_real_, "single unique value")
+    as_mean_tobit(1, NA_real_, "single unique value", "single_value")
   )
   expect_equal(
     mean_tobit(5),
-    as_mean_tobit(5, NA_real_, "All values between lower and upper, standard mean/sd calculated")
+    as_mean_tobit(5, NA_real_, "All values between lower and upper, standard mean/sd calculated", "uncensored")
   )
 })
 
@@ -239,11 +240,11 @@ test_that("geomean_tobit with zeros below a positive lower limit", {
 test_that("geomean_tobit NA results keep the geomean_tobit class", {
   expect_equal(
     geomean_tobit(c(NA, NA)),
-    as_geomean_tobit(NA_real_, NA_real_, "All values were NA")
+    as_geomean_tobit(NA_real_, NA_real_, "All values were NA", "all_na")
   )
   expect_equal(
     geomean_tobit(c(1, 2), upper=1),
-    as_geomean_tobit(NA_real_, NA_real_, "all values above upper")
+    as_geomean_tobit(NA_real_, NA_real_, "all values above upper", "all_above_upper")
   )
 })
 

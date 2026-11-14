@@ -41,6 +41,7 @@ sd_tobit(c(2, 2, 3, 5, 6, 8), lower = 2, distribution = "norm")
 \seealso{
 Other Censored Descriptive Statistics:
 \code{\link[=geomean_tobit]{geomean_tobit()}},
-\code{\link[=mean_tobit]{mean_tobit()}}
+\code{\link[=mean_tobit]{mean_tobit()}},
+\code{\link{tobit_status_codes}}
 }
 \concept{Censored Descriptive Statistics}

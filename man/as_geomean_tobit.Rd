@@ -6,11 +6,11 @@
 \alias{as_geomean_tobit.mean_tobit}
 \title{Create or cast to a geomean_tobit object}
 \usage{
-as_geomean_tobit(mu, sd, message = NULL)
+as_geomean_tobit(mu, sd, message = NULL, status = NULL)
 
-\method{as_geomean_tobit}{default}(mu, sd, message = NULL)
+\method{as_geomean_tobit}{default}(mu, sd, message = NULL, status = NULL)
 
-\method{as_geomean_tobit}{mean_tobit}(mu, sd, message = NULL)
+\method{as_geomean_tobit}{mean_tobit}(mu, sd, message = NULL, status = NULL)
 }
 \arguments{
 \item{mu}{The geometric mean}
@@ -18,10 +18,13 @@ as_geomean_tobit(mu, sd, message = NULL)
 \item{sd}{The geometric standard deviation}
 
 \item{message}{Additional information about the mean}
+
+\item{status}{\code{NULL}, or how the mean was reached: one of
+\code{tobit_status_codes$status}}
 }
 \value{
 A 'geomean_tobit' class object which is a number with attributes for
-'sd' and 'message'.
+'sd', 'message', and (when given) 'status'.
 }
 \description{
 Create or cast to a geomean_tobit object

@@ -139,7 +139,7 @@ test_that("tobit_standardization", {
 test_that("tobit_optim_error", {
   expect_equal(
     tobit_optim_error(simpleError("foo")),
-    list(convergence=-1L, message="foo")
+    list(convergence=-1L, message="foo", error=TRUE)
   )
 })
 
