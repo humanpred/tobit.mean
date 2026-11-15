@@ -16,6 +16,11 @@ The \code{"status"} attribute of the results of \code{mean_tobit()},
 says how the result was reached, so a caller can act on it without reading
 the \code{"message"} attribute, whose text may change.
 }
+\details{
+Arithmetic on a result keeps its attributes, as it kept \code{"sd"} and
+\code{"message"} in 0.1.0: after \code{m + 1}, the \code{"status"} still
+describes the fit that gave \code{m}, not the new value.
+}
 \section{Codes}{
 
 \describe{

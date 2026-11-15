@@ -5,6 +5,10 @@
 #' says how the result was reached, so a caller can act on it without reading
 #' the \code{"message"} attribute, whose text may change.
 #'
+#' Arithmetic on a result keeps its attributes, as it kept \code{"sd"} and
+#' \code{"message"} in 0.1.0: after \code{m + 1}, the \code{"status"} still
+#' describes the fit that gave \code{m}, not the new value.
+#'
 #' @eval tobit_status_rd()
 #' @format A data.frame with one row per code: \code{status} (the code) and
 #'   \code{meaning}

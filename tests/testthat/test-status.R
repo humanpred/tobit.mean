@@ -49,7 +49,7 @@ test_that("the status of a fit that did not converge or stopped says which, and 
 })
 
 test_that("geomean_tobit() and sd_tobit() carry the status of the mean", {
-  expect_equal(attr(geomean_tobit(c(2, 2, 3, 5, 6, 8), lower=2, distribution="norm"), "status"), "converged")
+  expect_equal(attr(geomean_tobit(c(2, 2, 3, 5, 6, 8), lower=2, distribution="norm"), "status", exact=TRUE), "converged")
   expect_equal(attr(geomean_tobit(1:10), "status", exact=TRUE), "uncensored")
   expect_equal(attr(geomean_tobit(numeric(0)), "status", exact=TRUE), "no_values")
   expect_equal(attr(geomean_tobit(c(1, 2), upper=1), "status", exact=TRUE), "all_above_upper")
