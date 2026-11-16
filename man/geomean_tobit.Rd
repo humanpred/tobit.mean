@@ -34,8 +34,9 @@ fewer values.}
 \value{
 A "geomean_tobit" class object (which also has the "mean_tobit"
 class) which is a number with attributes for the standard deviation of
-\code{log(x)} (sd) and convergence information in the "message"
-attribute.
+\code{log(x)} (sd), convergence information in the "message" attribute,
+and how the result was reached in the "status" attribute, one of
+\code{tobit_status_codes$status}.
 }
 \description{
 The geometric mean is calculated as the exponential of the censored mean of
@@ -47,6 +48,7 @@ geomean_tobit(c(2, 2, 3, 5, 6, 8), lower = 2, distribution = "norm")
 \seealso{
 Other Censored Descriptive Statistics:
 \code{\link[=mean_tobit]{mean_tobit()}},
-\code{\link[=sd_tobit]{sd_tobit()}}
+\code{\link[=sd_tobit]{sd_tobit()}},
+\code{\link{tobit_status_codes}}
 }
 \concept{Censored Descriptive Statistics}

@@ -1,7 +1,7 @@
 # Object coercion and casting ####
 
 # Standardize input checking
-as_tobit_input_check <- function(mu, sd, message) {
+as_tobit_input_check <- function(mu, sd, message, status=NULL) {
   stopifnot("'mu' must be a scalar"=length(mu) == 1)
   stopifnot("'sd' must be a scalar"=length(sd) == 1)
   # Coerce NA to be numeric, regardless of the input class
@@ -14,19 +14,24 @@ as_tobit_input_check <- function(mu, sd, message) {
   stopifnot("'mu' must be numeric"=is.numeric(mu))
   stopifnot("'sd' must be numeric"=is.numeric(sd))
   stopifnot("'sd' must be NA when 'mu' is NA"=is.na(sd) || !is.na(mu))
-  list(mu=mu, sd=sd, message=message)
+  stopifnot(
+    "'status' must be NULL or one of tobit_status_codes$status"=
+      is.null(status) ||
+      (is.character(status) && length(status) == 1 && status %in% tobit_status_codes$status)
+  )
+  list(mu=mu, sd=sd, message=message, status=status)
 }
 
-as_tobit_input_check_conversion <- function(mu, sd, message) {
+as_tobit_input_check_conversion <- function(mu, sd, message, status=NULL) {
   # Check that the input object is valid
   if (!missing(mu)) {
-    tmp <-
+    ret <-
       as_tobit_input_check(
         mu=as.numeric(mu),
         sd=attr(mu, which="sd", exact=TRUE),
-        message=attr(mu, which="message", exact=TRUE)
+        message=attr(mu, which="message", exact=TRUE),
+        status=attr(mu, which="status", exact=TRUE)
       )
-    ret <- list(mu=tmp$mu, sd=tmp$sd, message=tmp$message)
   } else {
     ret <- NULL
   }
@@ -35,6 +40,9 @@ as_tobit_input_check_conversion <- function(mu, sd, message) {
   }
   if (!is.null(message)) {
     warning("'message' is ignored for object conversion (message is taken from the object)")
+  }
+  if (!is.null(status)) {
+    warning("'status' is ignored for object conversion (status is taken from the object)")
   }
   ret
 }
@@ -45,24 +53,27 @@ as_tobit_input_check_conversion <- function(mu, sd, message) {
 #' @param sd The arithmetic standard deviation (\code{NA} when it cannot be
 #'   estimated; it must be \code{NA} when \code{mu} is \code{NA})
 #' @param message Additional information about the mean
+#' @param status \code{NULL}, or how the mean was reached: one of
+#'   \code{tobit_status_codes$status}
 #' @return A 'mean_tobit' class object which is a number with attributes for
-#'   'sd' and 'message'.
+#'   'sd', 'message', and (when given) 'status'.
 #' @family Class creation and coercion
 #' @examples
 #' as_mean_tobit(mu=10, sd=2, message="This is just an example")
 #' @export
-as_mean_tobit <- function(mu, sd, message=NULL) {
+as_mean_tobit <- function(mu, sd, message=NULL, status=NULL) {
   UseMethod("as_mean_tobit")
 }
 
 #' @rdname as_mean_tobit
 #' @export
-as_mean_tobit.default <- function(mu, sd, message=NULL) {
-  tmp <- as_tobit_input_check(mu=mu, sd=sd, message=message)
+as_mean_tobit.default <- function(mu, sd, message=NULL, status=NULL) {
+  tmp <- as_tobit_input_check(mu=mu, sd=sd, message=message, status=status)
   structure(
     tmp$mu,
     sd=tmp$sd,
     message=tmp$message,
+    status=tmp$status,
     class="mean_tobit"
   )
 }
@@ -73,32 +84,33 @@ as_mean_tobit.default <- function(mu, sd, message=NULL) {
 #' @param sd The geometric standard deviation
 #' @inheritParams as_mean_tobit
 #' @return A 'geomean_tobit' class object which is a number with attributes for
-#'   'sd' and 'message'.
+#'   'sd', 'message', and (when given) 'status'.
 #' @family Class creation and coercion
 #' @examples
 #' as_geomean_tobit(mu=10, sd=2, message="This is just an example")
 #' @export
-as_geomean_tobit <- function(mu, sd, message=NULL) {
+as_geomean_tobit <- function(mu, sd, message=NULL, status=NULL) {
   UseMethod("as_geomean_tobit")
 }
 
 #' @rdname as_geomean_tobit
 #' @export
-as_geomean_tobit.default <- function(mu, sd, message=NULL) {
-  tmp <- as_tobit_input_check(mu=mu, sd=sd, message=message)
+as_geomean_tobit.default <- function(mu, sd, message=NULL, status=NULL) {
+  tmp <- as_tobit_input_check(mu=mu, sd=sd, message=message, status=status)
   structure(
     tmp$mu,
     sd=tmp$sd,
     message=tmp$message,
+    status=tmp$status,
     class=c("geomean_tobit", "mean_tobit")
   )
 }
 
 #' @rdname as_geomean_tobit
 #' @export
-as_geomean_tobit.mean_tobit <- function(mu, sd, message=NULL) {
+as_geomean_tobit.mean_tobit <- function(mu, sd, message=NULL, status=NULL) {
   stopifnot("mean_tobit can only be converted to a geomean_tobit if it is NA"=is.na(mu))
-  as_tobit_input_check_conversion(mu=mu, sd=sd, message=message)
+  as_tobit_input_check_conversion(mu=mu, sd=sd, message=message, status=status)
   structure(
     mu,
     class=c("geomean_tobit", "mean_tobit")
@@ -150,35 +162,37 @@ cv_geomean <- function(sd) {
 #' Create or extract the standard deviation from a mean_tobit object
 #' @inheritParams as_mean_tobit
 #' @return A 'sd_tobit' class object which is a number with attributes of 'mu'
-#'   (the mean) and 'message'.
+#'   (the mean), 'message', and (when given) 'status'.
 #' @family Class creation and coercion
 #' @examples
 #' as_sd_tobit(mu = 10, sd = 2)
 #' as_sd_tobit(as_mean_tobit(mu = 10, sd = 2))
 #' @export
-as_sd_tobit <- function(mu, sd, message=NULL) {
+as_sd_tobit <- function(mu, sd, message=NULL, status=NULL) {
   UseMethod("as_sd_tobit")
 }
 
 #' @rdname as_sd_tobit
 #' @export
-as_sd_tobit.default <- function(mu, sd, message=NULL) {
-  tmp <- as_tobit_input_check(mu=mu, sd=sd, message=message)
+as_sd_tobit.default <- function(mu, sd, message=NULL, status=NULL) {
+  tmp <- as_tobit_input_check(mu=mu, sd=sd, message=message, status=status)
   structure(
     tmp$sd,
     mu=tmp$mu,
     message=tmp$message,
+    status=tmp$status,
     class="sd_tobit"
   )
 }
 
-as_sd_tobit_convert <- function(mu, sd, message) {
-  as_tobit_input_check_conversion(sd=sd, message=message)
+as_sd_tobit_convert <- function(mu, sd, message, status) {
+  as_tobit_input_check_conversion(sd=sd, message=message, status=status)
   structure(
     as_sd_tobit.default(
       mu=as.numeric(mu),
       sd=attr(mu, "sd", exact=TRUE),
-      message=attr(mu, "message", exact=TRUE)
+      message=attr(mu, "message", exact=TRUE),
+      status=attr(mu, "status", exact=TRUE)
     ),
     class=unique(c("sd_tobit", class(mu)))
   )
@@ -186,20 +200,20 @@ as_sd_tobit_convert <- function(mu, sd, message) {
 
 #' @describeIn as_sd_tobit Convert a 'mean_tobit' object to a 'sd_tobit' object
 #' @export
-as_sd_tobit.mean_tobit <- function(mu, sd, message=NULL) {
-  as_sd_tobit_convert(mu, sd, message=message)
+as_sd_tobit.mean_tobit <- function(mu, sd, message=NULL, status=NULL) {
+  as_sd_tobit_convert(mu, sd, message=message, status=status)
 }
 
 #' @describeIn as_sd_tobit Convert a 'geomean_tobit' object to a 'sd_tobit'
 #'   object
 #' @export
-as_sd_tobit.geomean_tobit <- function(mu, sd, message=NULL) {
-  as_sd_tobit_convert(mu, sd, message=message)
+as_sd_tobit.geomean_tobit <- function(mu, sd, message=NULL, status=NULL) {
+  as_sd_tobit_convert(mu, sd, message=message, status=status)
 }
 
 #' @describeIn as_sd_tobit Return a 'sd_tobit' object unchanged
 #' @export
-as_sd_tobit.sd_tobit <- function(mu, sd, message=NULL) {
-  as_tobit_input_check_conversion(sd=sd, message=message)
+as_sd_tobit.sd_tobit <- function(mu, sd, message=NULL, status=NULL) {
+  as_tobit_input_check_conversion(sd=sd, message=message, status=status)
   mu
 }

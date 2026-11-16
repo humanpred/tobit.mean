@@ -25,8 +25,9 @@
 #'   Values of \code{x} must be finite unless they are censored at a finite
 #'   limit (for example, \code{-Inf} with \code{lower = 0}).
 #' @return A 'mean_tobit' object which is a number with attributes for the
-#'   standard deviation (sd) and convergence information in the "message"
-#'   attribute.
+#'   standard deviation (sd), convergence information in the "message"
+#'   attribute, and how the result was reached in the "status" attribute, one
+#'   of \code{tobit_status_codes$status}.
 #' @references Tobin J. Estimation of Relationships for Limited Dependent
 #'   Variables. Econometrica. 1958;26(1):24-36. \doi{10.2307/1907382}
 #'
@@ -81,15 +82,20 @@ mean_tobit <- function(x,
       all(is.finite(upper[mask_upper]))
   )
   if (all(mask_between)) {
-    ret <- as_mean_tobit(mu = mean(x), sd = stats::sd(x), message = "All values between lower and upper, standard mean/sd calculated")
+    ret <-
+      as_mean_tobit(
+        mu=mean(x), sd=stats::sd(x),
+        message="All values between lower and upper, standard mean/sd calculated", status="uncensored"
+      )
   } else if (all(mask_upper)) {
-    ret <- as_mean_tobit(mu=NA_real_, sd=NA_real_, message="all values above upper")
+    ret <- as_mean_tobit(mu=NA_real_, sd=NA_real_, message="all values above upper", status="all_above_upper")
   } else if (all(mask_lower)) {
-    ret <- as_mean_tobit(mu=NA_real_, sd=NA_real_, message="all values below lower")
+    ret <- as_mean_tobit(mu=NA_real_, sd=NA_real_, message="all values below lower", status="all_below_lower")
   } else if (!any(mask_between)) {
-    ret <- as_mean_tobit(mu=NA_real_, sd=NA_real_, message="no values between lower and upper")
+    ret <-
+      as_mean_tobit(mu=NA_real_, sd=NA_real_, message="no values between lower and upper", status="none_between")
   } else if (all(x == x[1])) {
-    ret <- as_mean_tobit(mu=x[1], sd=NA_real_, message="single unique value")
+    ret <- as_mean_tobit(mu=x[1], sd=NA_real_, message="single unique value", status="single_value")
   } else {
     std <- tobit_standardization(x=x, lower=lower, upper=upper, mask_lower=mask_lower, mask_upper=mask_upper)
     ret_prep <-
@@ -125,7 +131,8 @@ mean_tobit <- function(x,
             paste(
               "Successful convergence.  message from stats::optim():",
               ret_prep$message
-            )
+            ),
+          status="converged"
         )
     } else {
       # Unsuccessful convergence
@@ -137,7 +144,8 @@ mean_tobit <- function(x,
             paste(
               "Failed convergence.  message from stats::optim():",
               ret_prep$message
-            )
+            ),
+          status=if (isTRUE(ret_prep$error)) "optim_error" else "not_converged"
         )
     }
   }
@@ -169,8 +177,9 @@ sd_tobit <- function(...) {
 #' @inheritDotParams mean_tobit
 #' @return A "geomean_tobit" class object (which also has the "mean_tobit"
 #'   class) which is a number with attributes for the standard deviation of
-#'   \code{log(x)} (sd) and convergence information in the "message"
-#'   attribute.
+#'   \code{log(x)} (sd), convergence information in the "message" attribute,
+#'   and how the result was reached in the "status" attribute, one of
+#'   \code{tobit_status_codes$status}.
 #' @family Censored Descriptive Statistics
 #' @examples
 #' geomean_tobit(c(2, 2, 3, 5, 6, 8), lower = 2, distribution = "norm")
@@ -211,6 +220,7 @@ geomean_tobit <- function(x, lower=0, upper=Inf, na.rm=TRUE, ...) {
   as_geomean_tobit(
     mu=exp(as.numeric(ret_prep)),
     sd=attr(ret_prep, "sd", exact=TRUE),
-    message=attr(ret_prep, "message", exact=TRUE)
+    message=attr(ret_prep, "message", exact=TRUE),
+    status=attr(ret_prep, "status", exact=TRUE)
   )
 }

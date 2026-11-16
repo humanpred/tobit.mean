@@ -119,11 +119,14 @@ mean_tobit_check_values <- function(x, na.rm) {
     stop("'x' may not have class 'mean_tobit'")
   }
   if (length(x) == 0) {
-    ret <- as_mean_tobit(mu=NA_real_, sd=NA_real_, message="No values were given")
+    ret <- as_mean_tobit(mu=NA_real_, sd=NA_real_, message="No values were given", status="no_values")
   } else if (all(is.na(x))) {
-    ret <- as_mean_tobit(mu=NA_real_, sd=NA_real_, message="All values were NA")
+    ret <- as_mean_tobit(mu=NA_real_, sd=NA_real_, message="All values were NA", status="all_na")
   } else if (any(is.na(x)) && !na.rm) {
-    ret <- as_mean_tobit(mu=NA_real_, sd=NA_real_, message="Some values were NA, and na.rm=FALSE")
+    ret <-
+      as_mean_tobit(
+        mu=NA_real_, sd=NA_real_, message="Some values were NA, and na.rm=FALSE", status="na_not_removed"
+      )
   } else {
     ret <- stats::na.omit(x)
   }
@@ -187,9 +190,9 @@ tobit_sd_from_scale <- function(scale, distribution=c("t", "norm"), df) {
 #'
 #' @param e The error condition
 #' @return A list shaped like the parts of the \code{stats::optim()} result that
-#'   \code{mean_tobit()} uses
+#'   \code{mean_tobit()} uses, with \code{error = TRUE}
 #' @keywords internal
 #' @noRd
 tobit_optim_error <- function(e) {
-  list(convergence=-1L, message=conditionMessage(e))
+  list(convergence=-1L, message=conditionMessage(e), error=TRUE)
 }
