@@ -5,10 +5,14 @@
 #' follow one pattern: \code{tobit_mean_error_<what>} for an error and
 #' \code{tobit_mean_warning_<what>} for a warning, and every error also has
 #' the class \code{"tobit_mean_error"} (every warning
-#' \code{"tobit_mean_warning"}) before R's own \code{"error"} (or
-#' \code{"warning"}) and \code{"condition"}. The messages are unchanged
-#' from 0.1.0, so \code{tryCatch(..., error = )} and code that matches the
-#' message keep working.
+#' \code{"tobit_mean_warning"}) before the classes \code{stop()} and
+#' \code{warning()} gave in 0.1.0: \code{"simpleError"}, \code{"error"},
+#' and \code{"condition"} (\code{"simpleWarning"}, \code{"warning"}, and
+#' \code{"condition"}). The classes are added in front, and the messages
+#' and calls are unchanged from 0.1.0, so \code{tryCatch(..., error = )},
+#' \code{inherits(e, "simpleError")}, and code that matches the message keep
+#' working. A printed condition shows its first class, so it begins with the
+#' new class name.
 #'
 #' @eval tobit_condition_rd()
 #' @format A data.frame with one row per class: \code{class}, \code{type}
@@ -164,7 +168,9 @@ tobit_condition_rd <- function() {
 #' @noRd
 tobit_abort <- function(class, message, call=sys.call(-1)) {
   tobit_condition_assert(class, "error")
-  stop(structure(class=c(class, "tobit_mean_error", "error", "condition"), list(message=message, call=call)))
+  stop(
+    structure(class=c(class, "tobit_mean_error", "simpleError", "error", "condition"), list(message=message, call=call))
+  )
 }
 
 #' Raise a warning of one of the package's classes
@@ -175,7 +181,11 @@ tobit_abort <- function(class, message, call=sys.call(-1)) {
 #' @noRd
 tobit_warn <- function(class, message, call=sys.call(-1)) {
   tobit_condition_assert(class, "warning")
-  warning(structure(class=c(class, "tobit_mean_warning", "warning", "condition"), list(message=message, call=call)))
+  warning(
+    structure(
+      class=c(class, "tobit_mean_warning", "simpleWarning", "warning", "condition"), list(message=message, call=call)
+    )
+  )
 }
 
 #' Raise an error of one of the package's classes unless a check holds
@@ -207,7 +217,7 @@ tobit_condition_assert <- function(class, type) {
   if (!(length(class) == 1 && class %in% known)) {
     stop(
       structure(
-        class=c("tobit_mean_error_internal", "tobit_mean_error", "error", "condition"),
+        class=c("tobit_mean_error_internal", "tobit_mean_error", "simpleError", "error", "condition"),
         list(message=paste("Unknown", type, "class, please report this as a bug:", paste(class, collapse=", ")), call=NULL)
       )
     )

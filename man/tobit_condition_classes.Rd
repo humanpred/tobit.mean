@@ -18,10 +18,14 @@ so a caller can handle one without matching its message. The classes
 follow one pattern: \code{tobit_mean_error_<what>} for an error and
 \code{tobit_mean_warning_<what>} for a warning, and every error also has
 the class \code{"tobit_mean_error"} (every warning
-\code{"tobit_mean_warning"}) before R's own \code{"error"} (or
-\code{"warning"}) and \code{"condition"}. The messages are unchanged
-from 0.1.0, so \code{tryCatch(..., error = )} and code that matches the
-message keep working.
+\code{"tobit_mean_warning"}) before the classes \code{stop()} and
+\code{warning()} gave in 0.1.0: \code{"simpleError"}, \code{"error"},
+and \code{"condition"} (\code{"simpleWarning"}, \code{"warning"}, and
+\code{"condition"}). The classes are added in front, and the messages
+and calls are unchanged from 0.1.0, so \code{tryCatch(..., error = )},
+\code{inherits(e, "simpleError")}, and code that matches the message keep
+working. A printed condition shows its first class, so it begins with the
+new class name.
 }
 \section{Classes}{
 

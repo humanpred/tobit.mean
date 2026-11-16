@@ -81,7 +81,8 @@ test_that("every class is raised through the real code path, with its message", 
   for (class in names(cases)) {
     cond <- tobit_condition_of(eval(cases[[class]]), class)
     type <- tobit_condition_classes$type[tobit_condition_classes$class == class]
-    expect_equal(class(cond), c(class, paste0("tobit_mean_", type), type, "condition"), info=class)
+    simple <- if (type == "error") "simpleError" else "simpleWarning"
+    expect_equal(class(cond), c(class, paste0("tobit_mean_", type), simple, type, "condition"), info=class)
     message <- tobit_condition_classes$message[tobit_condition_classes$class == class]
     if (!is.na(message)) {
       expect_identical(conditionMessage(cond), message, info=class)
@@ -106,21 +107,44 @@ test_that("code that caught the errors and warnings, or matched their messages, 
   expect_identical(as.character(conditionCall(err)[[1]]), "mean_tobit_check_x_lower_upper")
   err <- tryCatch(geomean_tobit(c(0, 1, 2), lower=0), error=function(e) e)
   expect_identical(as.character(conditionCall(err)[[1]]), "geomean_tobit")
-  # Every error has the package's parent class, and every warning its own.
+  # Every error has the package's parent class, and every warning its own,
+  # in front of the classes stop() and warning() gave.
   expect_error(mean_tobit(1:3, lower=NA_real_), class="tobit_mean_error")
   expect_warning(geomean_tobit(c(-1, 2, 3), lower=0.5), class="tobit_mean_warning")
+  err <- tryCatch(mean_tobit(1:3, lower=NA_real_), error=function(e) e)
+  expect_true(inherits(err, "simpleError"))
+  warn <- tryCatch(geomean_tobit(c(-1, 2, 3), lower=0.5), warning=function(w) w)
+  expect_true(inherits(warn, "simpleWarning"))
 })
 
-test_that("no function of the package calls stop(), warning(), or stopifnot() but the helpers that raise the classes", {
+# Every name and string constant of an expression, at any depth
+tobit_code_words <- function(x) {
+  if (is.character(x)) {
+    return(x)
+  }
+  if (is.name(x)) {
+    return(as.character(x))
+  }
+  if (is.call(x) || is.pairlist(x) || is.list(x)) {
+    return(unlist(lapply(as.list(x), function(y) if (missing(y)) character(0) else tobit_code_words(y))))
+  }
+  character(0)
+}
+
+test_that("no function of the package raises a condition but through the helpers that give it a class", {
   ns <- asNamespace("tobit.mean")
   helpers <- c("tobit_abort", "tobit_warn", "tobit_condition_assert")
+  raisers <- c("stop", "warning", "stopifnot", "signalCondition", "simpleError", "simpleWarning")
   for (name in setdiff(ls(ns, all.names=TRUE), helpers)) {
     x <- get(name, envir=ns)
     if (is.function(x)) {
-      used <- intersect(c("stop", "warning", "stopifnot"), all.names(body(x)))
-      expect_identical(used, character(0), info=name)
+      # The body and the default arguments, names and strings alike, so a
+      # call through do.call("stop") or match.fun() is found too.
+      words <- c(tobit_code_words(body(x)), tobit_code_words(formals(x)))
+      expect_identical(intersect(raisers, words), character(0), info=name)
     }
   }
+  expect_identical(tobit_code_words(quote(do.call("stop", list("a")))), c("do.call", "stop", "list", "a"))
   expect_error(tobit_abort("tobit_mean_error_unknown", "x"), class="tobit_mean_error_internal")
   expect_error(tobit_warn("tobit_mean_error_internal", "x"), class="tobit_mean_error_internal")
 })
