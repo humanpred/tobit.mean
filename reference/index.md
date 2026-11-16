@@ -16,3 +16,5 @@
   : Calculate a censored mean
 - [`sd_tobit()`](https://humanpred.github.io/tobit.mean/reference/sd_tobit.md)
   : Calculate the censored standard deviation
+- [`tobit_status_codes`](https://humanpred.github.io/tobit.mean/reference/tobit_status_codes.md)
+  : Status codes of a censored mean

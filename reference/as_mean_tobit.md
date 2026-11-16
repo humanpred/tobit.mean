@@ -5,10 +5,10 @@ Create or cast to a mean_tobit object
 ## Usage
 
 ``` r
-as_mean_tobit(mu, sd, message = NULL)
+as_mean_tobit(mu, sd, message = NULL, status = NULL)
 
 # Default S3 method
-as_mean_tobit(mu, sd, message = NULL)
+as_mean_tobit(mu, sd, message = NULL, status = NULL)
 ```
 
 ## Arguments
@@ -26,10 +26,15 @@ as_mean_tobit(mu, sd, message = NULL)
 
   Additional information about the mean
 
+- status:
+
+  `NULL`, or how the mean was reached: one of
+  `tobit_status_codes$status`
+
 ## Value
 
-A 'mean_tobit' class object which is a number with attributes for 'sd'
-and 'message'.
+A 'mean_tobit' class object which is a number with attributes for 'sd',
+'message', and (when given) 'status'.
 
 ## See also
 

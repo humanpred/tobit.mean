@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">tobit.mean</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,10 +33,18 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.0.0.9000" id="tobitmean-0009000">tobit.mean 0.0.0.9000<a class="anchor" aria-label="anchor" href="#tobitmean-0009000"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.1.0.9000" id="tobitmean-0109000">tobit.mean 0.1.0.9000<a class="anchor" aria-label="anchor" href="#tobitmean-0109000"></a></h2>
+<ul><li>
+<code><a href="../reference/mean_tobit.html">mean_tobit()</a></code>, <code><a href="../reference/geomean_tobit.html">geomean_tobit()</a></code>, and <code><a href="../reference/sd_tobit.html">sd_tobit()</a></code> results have a <code>"status"</code> attribute saying how the result was reached, one of the codes in the new exported <code>tobit_status_codes</code> (for example <code>"converged"</code>, <code>"not_converged"</code>, <code>"all_below_lower"</code>). The <code>"message"</code> attribute is unchanged.</li>
+<li>
+<code><a href="../reference/as_mean_tobit.html">as_mean_tobit()</a></code>, <code><a href="../reference/as_geomean_tobit.html">as_geomean_tobit()</a></code>, and <code><a href="../reference/as_sd_tobit.html">as_sd_tobit()</a></code> take a <code>status</code> argument (<code>NULL</code> by default, giving no attribute, as before).</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.1.0" id="tobitmean-010">tobit.mean 0.1.0<a class="anchor" aria-label="anchor" href="#tobitmean-010"></a></h2>
 <ul><li>Initial CRAN submission.</li>
 </ul></div>
-  </main></div>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">

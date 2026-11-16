@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">tobit.mean</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -39,19 +39,19 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">as_sd_tobit</span><span class="op">(</span><span class="va">mu</span>, <span class="va">sd</span>, message <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">as_sd_tobit</span><span class="op">(</span><span class="va">mu</span>, <span class="va">sd</span>, message <span class="op">=</span> <span class="cn">NULL</span>, status <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Default S3 method</span></span>
-<span><span class="fu">as_sd_tobit</span><span class="op">(</span><span class="va">mu</span>, <span class="va">sd</span>, message <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span><span class="fu">as_sd_tobit</span><span class="op">(</span><span class="va">mu</span>, <span class="va">sd</span>, message <span class="op">=</span> <span class="cn">NULL</span>, status <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'mean_tobit'</span></span>
-<span><span class="fu">as_sd_tobit</span><span class="op">(</span><span class="va">mu</span>, <span class="va">sd</span>, message <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span><span class="fu">as_sd_tobit</span><span class="op">(</span><span class="va">mu</span>, <span class="va">sd</span>, message <span class="op">=</span> <span class="cn">NULL</span>, status <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'geomean_tobit'</span></span>
-<span><span class="fu">as_sd_tobit</span><span class="op">(</span><span class="va">mu</span>, <span class="va">sd</span>, message <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span><span class="fu">as_sd_tobit</span><span class="op">(</span><span class="va">mu</span>, <span class="va">sd</span>, message <span class="op">=</span> <span class="cn">NULL</span>, status <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'sd_tobit'</span></span>
-<span><span class="fu">as_sd_tobit</span><span class="op">(</span><span class="va">mu</span>, <span class="va">sd</span>, message <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">as_sd_tobit</span><span class="op">(</span><span class="va">mu</span>, <span class="va">sd</span>, message <span class="op">=</span> <span class="cn">NULL</span>, status <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -70,11 +70,16 @@ estimated; it must be <code>NA</code> when <code>mu</code> is <code>NA</code>)</
 <dt id="arg-message">message<a class="anchor" aria-label="anchor" href="#arg-message"></a></dt>
 <dd><p>Additional information about the mean</p></dd>
 
+
+<dt id="arg-status">status<a class="anchor" aria-label="anchor" href="#arg-status"></a></dt>
+<dd><p><code>NULL</code>, or how the mean was reached: one of
+<code>tobit_status_codes$status</code></p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A 'sd_tobit' class object which is a number with attributes of 'mu'
-(the mean) and 'message'.</p>
+(the mean), 'message', and (when given) 'status'.</p>
     </div>
     <div class="section level2">
     <h2 id="methods-by-class-">Methods (by class)<a class="anchor" aria-label="anchor" href="#methods-by-class-"></a></h2>

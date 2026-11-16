@@ -53,13 +53,16 @@ geomean_tobit(x, lower = 0, upper = Inf, na.rm = TRUE, ...)
 
 A "geomean_tobit" class object (which also has the "mean_tobit" class)
 which is a number with attributes for the standard deviation of `log(x)`
-(sd) and convergence information in the "message" attribute.
+(sd), convergence information in the "message" attribute, and how the
+result was reached in the "status" attribute, one of
+`tobit_status_codes$status`.
 
 ## See also
 
 Other Censored Descriptive Statistics:
 [`mean_tobit()`](https://humanpred.github.io/tobit.mean/reference/mean_tobit.md),
-[`sd_tobit()`](https://humanpred.github.io/tobit.mean/reference/sd_tobit.md)
+[`sd_tobit()`](https://humanpred.github.io/tobit.mean/reference/sd_tobit.md),
+[`tobit_status_codes`](https://humanpred.github.io/tobit.mean/reference/tobit_status_codes.md)
 
 ## Examples
 
@@ -70,6 +73,8 @@ geomean_tobit(c(2, 2, 3, 5, 6, 8), lower = 2, distribution = "norm")
 #> [1] 0.7585052
 #> attr(,"message")
 #> [1] "Successful convergence.  message from stats::optim(): CONVERGENCE: REL_REDUCTION_OF_F <= FACTR*EPSMCH"
+#> attr(,"status")
+#> [1] "converged"
 #> attr(,"class")
 #> [1] "geomean_tobit" "mean_tobit"   
 ```

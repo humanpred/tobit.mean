@@ -95,7 +95,9 @@ mean_tobit(
 ## Value
 
 A 'mean_tobit' object which is a number with attributes for the standard
-deviation (sd) and convergence information in the "message" attribute.
+deviation (sd), convergence information in the "message" attribute, and
+how the result was reached in the "status" attribute, one of
+`tobit_status_codes$status`.
 
 ## Details
 
@@ -123,7 +125,8 @@ the Tobit Model. Econometrica. 1978;46(5):1211-1215.
 
 Other Censored Descriptive Statistics:
 [`geomean_tobit()`](https://humanpred.github.io/tobit.mean/reference/geomean_tobit.md),
-[`sd_tobit()`](https://humanpred.github.io/tobit.mean/reference/sd_tobit.md)
+[`sd_tobit()`](https://humanpred.github.io/tobit.mean/reference/sd_tobit.md),
+[`tobit_status_codes`](https://humanpred.github.io/tobit.mean/reference/tobit_status_codes.md)
 
 ## Examples
 
@@ -136,6 +139,8 @@ mean_tobit(c(2, 2, 3, 5, 6, 8), lower = 2, distribution = "norm")
 #> [1] 3.100173
 #> attr(,"message")
 #> [1] "Successful convergence.  message from stats::optim(): CONVERGENCE: REL_REDUCTION_OF_F <= FACTR*EPSMCH"
+#> attr(,"status")
+#> [1] "converged"
 #> attr(,"class")
 #> [1] "mean_tobit"
 ```

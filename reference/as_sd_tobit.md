@@ -5,19 +5,19 @@ Create or extract the standard deviation from a mean_tobit object
 ## Usage
 
 ``` r
-as_sd_tobit(mu, sd, message = NULL)
+as_sd_tobit(mu, sd, message = NULL, status = NULL)
 
 # Default S3 method
-as_sd_tobit(mu, sd, message = NULL)
+as_sd_tobit(mu, sd, message = NULL, status = NULL)
 
 # S3 method for class 'mean_tobit'
-as_sd_tobit(mu, sd, message = NULL)
+as_sd_tobit(mu, sd, message = NULL, status = NULL)
 
 # S3 method for class 'geomean_tobit'
-as_sd_tobit(mu, sd, message = NULL)
+as_sd_tobit(mu, sd, message = NULL, status = NULL)
 
 # S3 method for class 'sd_tobit'
-as_sd_tobit(mu, sd, message = NULL)
+as_sd_tobit(mu, sd, message = NULL, status = NULL)
 ```
 
 ## Arguments
@@ -35,10 +35,15 @@ as_sd_tobit(mu, sd, message = NULL)
 
   Additional information about the mean
 
+- status:
+
+  `NULL`, or how the mean was reached: one of
+  `tobit_status_codes$status`
+
 ## Value
 
 A 'sd_tobit' class object which is a number with attributes of 'mu' (the
-mean) and 'message'.
+mean), 'message', and (when given) 'status'.
 
 ## Methods (by class)
 

@@ -56,7 +56,8 @@ A "sd_tobit" class object
 
 Other Censored Descriptive Statistics:
 [`geomean_tobit()`](https://humanpred.github.io/tobit.mean/reference/geomean_tobit.md),
-[`mean_tobit()`](https://humanpred.github.io/tobit.mean/reference/mean_tobit.md)
+[`mean_tobit()`](https://humanpred.github.io/tobit.mean/reference/mean_tobit.md),
+[`tobit_status_codes`](https://humanpred.github.io/tobit.mean/reference/tobit_status_codes.md)
 
 ## Examples
 
@@ -67,6 +68,8 @@ sd_tobit(c(2, 2, 3, 5, 6, 8), lower = 2, distribution = "norm")
 #> [1] 3.682552
 #> attr(,"message")
 #> [1] "Successful convergence.  message from stats::optim(): CONVERGENCE: REL_REDUCTION_OF_F <= FACTR*EPSMCH"
+#> attr(,"status")
+#> [1] "converged"
 #> attr(,"class")
 #> [1] "sd_tobit"   "mean_tobit"
 ```
