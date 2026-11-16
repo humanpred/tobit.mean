@@ -6,6 +6,11 @@
   `"all_below_lower"`). The `"message"` attribute is unchanged.
 * `as_mean_tobit()`, `as_geomean_tobit()`, and `as_sd_tobit()` take a `status`
   argument (`NULL` by default, giving no attribute, as before).
+* Every error and warning has a class, listed in the new exported
+  `tobit_condition_classes` (`tobit_mean_error_<what>` or
+  `tobit_mean_warning_<what>`, with the parent class `tobit_mean_error` or
+  `tobit_mean_warning`), so it can be handled without matching its message.
+  The messages are unchanged.
 
 # tobit.mean 0.1.0
 

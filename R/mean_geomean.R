@@ -75,11 +75,11 @@ mean_tobit <- function(x,
   # A value can satisfy both masks only if lower >= upper, which is refused
   # above, so every value is in exactly one mask.
   mask_between <- !(mask_upper | mask_lower)
-  stopifnot(
-    "'x' must be finite unless it is censored at a finite limit"=
-      all(is.finite(x[mask_between])) &&
+  tobit_check(
+    all(is.finite(x[mask_between])) &&
       all(is.finite(lower[mask_lower])) &&
-      all(is.finite(upper[mask_upper]))
+      all(is.finite(upper[mask_upper])),
+    "tobit_mean_error_x_not_finite", "'x' must be finite unless it is censored at a finite limit"
   )
   if (all(mask_between)) {
     ret <-
@@ -201,20 +201,20 @@ geomean_tobit <- function(x, lower=0, upper=Inf, na.rm=TRUE, ...) {
   upper <- x_lower_and_upper$upper
   mask_lower_x_problem <- x <= 0 & lower <= 0
   if (any(mask_lower_x_problem)) {
-    stop("'x' and 'lower' cannot both be <= 0 at the same time")
+    tobit_abort("tobit_mean_error_geomean_nonpositive", "'x' and 'lower' cannot both be <= 0 at the same time")
   }
   mask_negative_x <- x < 0
   if (any(mask_negative_x)) {
-    warning("some 'x' values were below zero, setting to zero")
+    tobit_warn("tobit_mean_warning_x_negative", "some 'x' values were below zero, setting to zero")
     x[mask_negative_x] <- 0
   }
   mask_negative_lower <- lower < 0
   if (any(mask_negative_lower)) {
-    warning("some 'lower' values were below zero, setting to zero")
+    tobit_warn("tobit_mean_warning_lower_negative", "some 'lower' values were below zero, setting to zero")
     lower[mask_negative_lower] <- 0
   }
   if (any(upper <= 0)) {
-    stop("some 'upper' values were at or below zero")
+    tobit_abort("tobit_mean_error_geomean_upper_nonpositive", "some 'upper' values were at or below zero")
   }
   ret_prep <- mean_tobit(x=log(x), lower=log(lower), upper=log(upper), na.rm=na.rm, ...)
   as_geomean_tobit(

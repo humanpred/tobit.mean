@@ -2,8 +2,8 @@
 
 # Standardize input checking
 as_tobit_input_check <- function(mu, sd, message, status=NULL) {
-  stopifnot("'mu' must be a scalar"=length(mu) == 1)
-  stopifnot("'sd' must be a scalar"=length(sd) == 1)
+  tobit_check(length(mu) == 1, "tobit_mean_error_mu_not_scalar", "'mu' must be a scalar")
+  tobit_check(length(sd) == 1, "tobit_mean_error_sd_not_scalar", "'sd' must be a scalar")
   # Coerce NA to be numeric, regardless of the input class
   if (is.na(mu)) {
     mu <- NA_real_
@@ -11,13 +11,14 @@ as_tobit_input_check <- function(mu, sd, message, status=NULL) {
   if (is.na(sd)) {
     sd <- NA_real_
   }
-  stopifnot("'mu' must be numeric"=is.numeric(mu))
-  stopifnot("'sd' must be numeric"=is.numeric(sd))
-  stopifnot("'sd' must be NA when 'mu' is NA"=is.na(sd) || !is.na(mu))
-  stopifnot(
-    "'status' must be NULL or one of tobit_status_codes$status"=
-      is.null(status) ||
-      (is.character(status) && length(status) == 1 && status %in% tobit_status_codes$status)
+  tobit_check(is.numeric(mu), "tobit_mean_error_mu_not_numeric", "'mu' must be numeric")
+  tobit_check(is.numeric(sd), "tobit_mean_error_sd_not_numeric", "'sd' must be numeric")
+  tobit_check(is.na(sd) || !is.na(mu), "tobit_mean_error_sd_without_mu", "'sd' must be NA when 'mu' is NA")
+  tobit_check(
+    is.null(status) ||
+      (is.character(status) && length(status) == 1 && status %in% tobit_status_codes$status),
+    "tobit_mean_error_status_invalid",
+    "'status' must be NULL or one of tobit_status_codes$status"
   )
   list(mu=mu, sd=sd, message=message, status=status)
 }
@@ -36,13 +37,21 @@ as_tobit_input_check_conversion <- function(mu, sd, message, status=NULL) {
     ret <- NULL
   }
   if (!missing(sd)) {
-    warning("'sd' is ignored for object conversion (sd is taken from the object)")
+    tobit_warn(
+      "tobit_mean_warning_sd_ignored", "'sd' is ignored for object conversion (sd is taken from the object)"
+    )
   }
   if (!is.null(message)) {
-    warning("'message' is ignored for object conversion (message is taken from the object)")
+    tobit_warn(
+      "tobit_mean_warning_message_ignored",
+      "'message' is ignored for object conversion (message is taken from the object)"
+    )
   }
   if (!is.null(status)) {
-    warning("'status' is ignored for object conversion (status is taken from the object)")
+    tobit_warn(
+      "tobit_mean_warning_status_ignored",
+      "'status' is ignored for object conversion (status is taken from the object)"
+    )
   }
   ret
 }
@@ -109,7 +118,9 @@ as_geomean_tobit.default <- function(mu, sd, message=NULL, status=NULL) {
 #' @rdname as_geomean_tobit
 #' @export
 as_geomean_tobit.mean_tobit <- function(mu, sd, message=NULL, status=NULL) {
-  stopifnot("mean_tobit can only be converted to a geomean_tobit if it is NA"=is.na(mu))
+  tobit_check(
+    is.na(mu), "tobit_mean_error_convert_not_na", "mean_tobit can only be converted to a geomean_tobit if it is NA"
+  )
   as_tobit_input_check_conversion(mu=mu, sd=sd, message=message, status=status)
   structure(
     mu,
