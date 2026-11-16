@@ -26,18 +26,18 @@ negLogLik_tobit <- function(param, x,
   # Input checks
   distribution <- match.arg(distribution)
   internal <- "tobit_mean_error_internal"
-  tobit_check(length(x) == length(lower_limit), internal, "length(x) == length(lower_limit) is not TRUE")
-  tobit_check(length(x) == length(upper_limit), internal, "length(x) == length(upper_limit) is not TRUE")
-  tobit_check(length(x) == length(mask_lower), internal, "length(x) == length(mask_lower) is not TRUE")
-  tobit_check(length(x) == length(mask_between), internal, "length(x) == length(mask_between) is not TRUE")
-  tobit_check(length(x) == length(mask_upper), internal, "length(x) == length(mask_upper) is not TRUE")
+  tobit_check(length(x) == length(lower_limit), internal, detail="length(x) == length(lower_limit) is not TRUE")
+  tobit_check(length(x) == length(upper_limit), internal, detail="length(x) == length(upper_limit) is not TRUE")
+  tobit_check(length(x) == length(mask_lower), internal, detail="length(x) == length(mask_lower) is not TRUE")
+  tobit_check(length(x) == length(mask_between), internal, detail="length(x) == length(mask_between) is not TRUE")
+  tobit_check(length(x) == length(mask_upper), internal, detail="length(x) == length(mask_upper) is not TRUE")
 
   l_x <- length(x)
   tobit_check(
     (sum(mask_lower) + sum(mask_between) + sum(mask_upper)) == l_x,
-    internal, "mask_lower, mask_between, and mask_upper may not overlap"
+    internal, detail="mask_lower, mask_between, and mask_upper may not overlap"
   )
-  tobit_check(length(param) == 2, internal, "param must have exactly 2 values")
+  tobit_check(length(param) == 2, internal, detail="param must have exactly 2 values")
   # Parameter extraction
   gamma <- exp(param[1])
   delta <- param[2]
@@ -59,7 +59,7 @@ negLogLik_tobit <- function(param, x,
         stats::pt(xtrans_upper, df=l_x, lower.tail=FALSE, log.p=TRUE)
       )
     } else {
-      tobit_abort(internal, paste0("Invalid distribution, please report this as a bug: ", distribution)) # nocov
+      tobit_abort(internal, detail=paste0("Invalid distribution, please report this as a bug: ", distribution)) # nocov
     }
   # Calculate the negative likelihood so that we can minimize the function
   return(-sum(loglik_i))
@@ -85,19 +85,13 @@ mean_tobit_check_x_lower_upper <- function(x, lower, upper, na.rm) {
   }
   # No values in x_clean are NA, anymore
   mask_na <- is.na(x)
-  tobit_check(is.numeric(lower), "tobit_mean_error_lower_not_numeric", "lower must be a numeric")
-  tobit_check(all(!is.na(lower)), "tobit_mean_error_lower_missing", "lower may not have missing values")
-  tobit_check(
-    length(lower) %in% c(1, length(x)),
-    "tobit_mean_error_lower_length", "lower must be a scalar or the same length as x"
-  )
-  tobit_check(is.numeric(upper), "tobit_mean_error_upper_not_numeric", "upper must be a numeric")
-  tobit_check(all(!is.na(upper)), "tobit_mean_error_upper_missing", "upper may not have missing values")
-  tobit_check(
-    length(upper) %in% c(1, length(x)),
-    "tobit_mean_error_upper_length", "upper must be a scalar or the same length as x"
-  )
-  tobit_check(all(lower < upper), "tobit_mean_error_limits_not_ordered", "each lower must be less than upper")
+  tobit_check(is.numeric(lower), "tobit_mean_error_lower_not_numeric")
+  tobit_check(all(!is.na(lower)), "tobit_mean_error_lower_missing")
+  tobit_check(length(lower) %in% c(1, length(x)), "tobit_mean_error_lower_length")
+  tobit_check(is.numeric(upper), "tobit_mean_error_upper_not_numeric")
+  tobit_check(all(!is.na(upper)), "tobit_mean_error_upper_missing")
+  tobit_check(length(upper) %in% c(1, length(x)), "tobit_mean_error_upper_length")
+  tobit_check(all(lower < upper), "tobit_mean_error_limits_not_ordered")
   if (length(lower) != 1) {
     lower <- lower[!mask_na]
   } else {
@@ -123,7 +117,7 @@ mean_tobit_check_x_lower_upper <- function(x, lower, upper, na.rm) {
 #' @noRd
 mean_tobit_check_values <- function(x, na.rm) {
   if (inherits(x, what="mean_tobit")) {
-    tobit_abort("tobit_mean_error_x_is_mean_tobit", "'x' may not have class 'mean_tobit'")
+    tobit_abort("tobit_mean_error_x_is_mean_tobit")
   }
   if (length(x) == 0) {
     ret <- as_mean_tobit(mu=NA_real_, sd=NA_real_, message="No values were given", status="no_values")
@@ -184,7 +178,7 @@ tobit_sd_from_scale <- function(scale, distribution=c("t", "norm"), df) {
   }
   tobit_check(
     length(df) == 1 && !is.na(df) && df > 0,
-    "tobit_mean_error_internal", "'df' must be a single, positive, non-NA number"
+    "tobit_mean_error_internal", detail="'df' must be a single, positive, non-NA number"
   )
   if (df > 2) {
     scale*sqrt(df/(df - 2))

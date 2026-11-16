@@ -158,16 +158,20 @@ tobit_condition_rd <- function() {
 
 #' Raise an error of one of the package's classes
 #'
+#' The message is that of the class in \code{tobit_condition_classes}, so the
+#' table and the raised error cannot disagree.
+#'
 #' @param class A class of \code{tobit_condition_classes} with type
 #'   \code{"error"}
-#' @param message The message
+#' @param detail The description of the failed check, given only for
+#'   \code{"tobit_mean_error_internal"} (the one class without a fixed message)
 #' @param call The call the error is reported in: that of the function that
 #'   raises it, as \code{stop()} gives
 #' @return Does not return
 #' @keywords internal
 #' @noRd
-tobit_abort <- function(class, message, call=sys.call(-1)) {
-  tobit_condition_assert(class, "error")
+tobit_abort <- function(class, detail=NULL, call=sys.call(-1)) {
+  message <- tobit_condition_message(class, "error", detail)
   stop(
     structure(class=c(class, "tobit_mean_error", "simpleError", "error", "condition"), list(message=message, call=call))
   )
@@ -175,12 +179,16 @@ tobit_abort <- function(class, message, call=sys.call(-1)) {
 
 #' Raise a warning of one of the package's classes
 #'
+#' The message is that of the class in \code{tobit_condition_classes}.
+#'
+#' @param class A class of \code{tobit_condition_classes} with type
+#'   \code{"warning"}
 #' @inheritParams tobit_abort
 #' @return The message, invisibly, as \code{warning()} returns it
 #' @keywords internal
 #' @noRd
-tobit_warn <- function(class, message, call=sys.call(-1)) {
-  tobit_condition_assert(class, "warning")
+tobit_warn <- function(class, call=sys.call(-1)) {
+  message <- tobit_condition_message(class, "warning", detail=NULL)
   warning(
     structure(
       class=c(class, "tobit_mean_warning", "simpleWarning", "warning", "condition"), list(message=message, call=call)
@@ -198,29 +206,53 @@ tobit_warn <- function(class, message, call=sys.call(-1)) {
 #' @return \code{NULL}, invisibly, when the check holds
 #' @keywords internal
 #' @noRd
-tobit_check <- function(check, class, message) {
+tobit_check <- function(check, class, detail=NULL) {
   if (!(is.logical(check) && !anyNA(check) && all(check))) {
-    tobit_abort(class, message, call=sys.call(-1))
+    tobit_abort(class, detail=detail, call=sys.call(-1))
   }
   invisible(NULL)
 }
 
-#' Refuse a class that is not in the table
+#' The message of one of the package's condition classes
+#'
+#' Refuses a class that is not in \code{tobit_condition_classes} with the
+#' given type, a \code{detail} for a class with a fixed message, and a missing
+#' \code{detail} for the class without one.
 #'
 #' @inheritParams tobit_abort
 #' @param type \code{"error"} or \code{"warning"}
-#' @return \code{NULL}, invisibly
+#' @return The message: the one in \code{tobit_condition_classes}, or
+#'   \code{detail} for the class without a fixed message
 #' @keywords internal
 #' @noRd
-tobit_condition_assert <- function(class, type) {
-  known <- tobit_condition_classes$class[tobit_condition_classes$type == type]
-  if (!(length(class) == 1 && class %in% known)) {
+tobit_condition_message <- function(class, type, detail) {
+  row <-
+    if (is.character(class) && length(class) == 1) {
+      tobit_condition_classes$class %in% class & tobit_condition_classes$type == type
+    } else {
+      FALSE
+    }
+  problem <-
+    if (sum(row) != 1) {
+      paste("Unknown", type, "class:", paste(class, collapse=", "))
+    } else if (is.na(tobit_condition_classes$message[row])) {
+      if (!(is.character(detail) && length(detail) == 1 && !is.na(detail))) {
+        paste("The", class, "condition needs a detail")
+      }
+    } else if (!is.null(detail)) {
+      paste("The", class, "condition has a fixed message and takes no detail")
+    }
+  if (!is.null(problem)) {
     stop(
       structure(
         class=c("tobit_mean_error_internal", "tobit_mean_error", "simpleError", "error", "condition"),
-        list(message=paste("Unknown", type, "class, please report this as a bug:", paste(class, collapse=", ")), call=NULL)
+        list(message=paste0(problem, ", please report this as a bug"), call=NULL)
       )
     )
   }
-  invisible(NULL)
+  if (is.na(tobit_condition_classes$message[row])) {
+    detail
+  } else {
+    tobit_condition_classes$message[row]
+  }
 }

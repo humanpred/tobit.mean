@@ -133,7 +133,7 @@ tobit_code_words <- function(x) {
 
 test_that("no function of the package raises a condition but through the helpers that give it a class", {
   ns <- asNamespace("tobit.mean")
-  helpers <- c("tobit_abort", "tobit_warn", "tobit_condition_assert")
+  helpers <- c("tobit_abort", "tobit_warn", "tobit_condition_message")
   raisers <- c("stop", "warning", "stopifnot", "signalCondition", "simpleError", "simpleWarning")
   for (name in setdiff(ls(ns, all.names=TRUE), helpers)) {
     x <- get(name, envir=ns)
@@ -145,6 +145,52 @@ test_that("no function of the package raises a condition but through the helpers
     }
   }
   expect_identical(tobit_code_words(quote(do.call("stop", list("a")))), c("do.call", "stop", "list", "a"))
-  expect_error(tobit_abort("tobit_mean_error_unknown", "x"), class="tobit_mean_error_internal")
-  expect_error(tobit_warn("tobit_mean_error_internal", "x"), class="tobit_mean_error_internal")
+})
+
+test_that("the helpers take each message from tobit_condition_classes", {
+  internal <- "tobit_mean_error_internal"
+  # The message raised is the one in the table, for every class with one.
+  fixed <- tobit_condition_classes[!is.na(tobit_condition_classes$message), ]
+  for (i in seq_len(nrow(fixed))) {
+    raise <- if (fixed$type[i] == "error") tobit_abort else tobit_warn
+    cond <- tobit_condition_of(raise(fixed$class[i]), fixed$class[i])
+    expect_identical(conditionMessage(cond), fixed$message[i], info=fixed$class[i])
+  }
+  # The internal class has no fixed message: its detail is the message.
+  expect_error(
+    tobit_check(FALSE, internal, detail="the check"),
+    regexp="^the check$", class=internal
+  )
+  expect_null(tobit_check(TRUE, internal, detail="the check"))
+  # Unknown classes, a class of the other type, a detail for a fixed message,
+  # and a missing detail are refused as bugs.
+  expect_error(
+    tobit_abort("tobit_mean_error_unknown"),
+    regexp="Unknown error class: tobit_mean_error_unknown, please report this as a bug", class=internal
+  )
+  expect_error(
+    tobit_warn(internal),
+    regexp="Unknown warning class: tobit_mean_error_internal", class=internal
+  )
+  expect_error(
+    tobit_abort("tobit_mean_warning_x_negative"),
+    regexp="Unknown error class: tobit_mean_warning_x_negative", class=internal
+  )
+  expect_error(
+    tobit_abort(c("tobit_mean_error_mu_not_scalar", "tobit_mean_error_sd_not_scalar")),
+    regexp="Unknown error class: tobit_mean_error_mu_not_scalar, tobit_mean_error_sd_not_scalar", class=internal
+  )
+  three <- c("tobit_mean_error_mu_not_scalar", "tobit_mean_error_sd_not_scalar", "tobit_mean_error_internal")
+  expect_error(tobit_abort(three), regexp="Unknown error class", class=internal)
+  expect_error(tobit_abort(NA_character_), regexp="Unknown error class: NA", class=internal)
+  expect_error(
+    tobit_abort("tobit_mean_error_mu_not_scalar", detail="x"),
+    regexp="The tobit_mean_error_mu_not_scalar condition has a fixed message and takes no detail", class=internal
+  )
+  expect_error(
+    tobit_abort(internal),
+    regexp="The tobit_mean_error_internal condition needs a detail", class=internal
+  )
+  expect_error(tobit_abort(internal, detail=NA_character_), regexp="needs a detail", class=internal)
+  expect_error(tobit_abort(internal, detail=c("a", "b")), regexp="needs a detail", class=internal)
 })
