@@ -126,6 +126,7 @@ the Tobit Model. Econometrica. 1978;46(5):1211-1215.
 Other Censored Descriptive Statistics:
 [`geomean_tobit()`](https://humanpred.github.io/tobit.mean/reference/geomean_tobit.md),
 [`sd_tobit()`](https://humanpred.github.io/tobit.mean/reference/sd_tobit.md),
+[`tobit_condition_classes`](https://humanpred.github.io/tobit.mean/reference/tobit_condition_classes.md),
 [`tobit_status_codes`](https://humanpred.github.io/tobit.mean/reference/tobit_status_codes.md)
 
 ## Examples

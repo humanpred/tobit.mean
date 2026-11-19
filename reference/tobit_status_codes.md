@@ -79,7 +79,8 @@ fit that gave `m`, not the new value.
 Other Censored Descriptive Statistics:
 [`geomean_tobit()`](https://humanpred.github.io/tobit.mean/reference/geomean_tobit.md),
 [`mean_tobit()`](https://humanpred.github.io/tobit.mean/reference/mean_tobit.md),
-[`sd_tobit()`](https://humanpred.github.io/tobit.mean/reference/sd_tobit.md)
+[`sd_tobit()`](https://humanpred.github.io/tobit.mean/reference/sd_tobit.md),
+[`tobit_condition_classes`](https://humanpred.github.io/tobit.mean/reference/tobit_condition_classes.md)
 
 ## Examples
 

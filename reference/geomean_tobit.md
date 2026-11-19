@@ -62,6 +62,7 @@ result was reached in the "status" attribute, one of
 Other Censored Descriptive Statistics:
 [`mean_tobit()`](https://humanpred.github.io/tobit.mean/reference/mean_tobit.md),
 [`sd_tobit()`](https://humanpred.github.io/tobit.mean/reference/sd_tobit.md),
+[`tobit_condition_classes`](https://humanpred.github.io/tobit.mean/reference/tobit_condition_classes.md),
 [`tobit_status_codes`](https://humanpred.github.io/tobit.mean/reference/tobit_status_codes.md)
 
 ## Examples
