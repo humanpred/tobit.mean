@@ -95,6 +95,7 @@ the Tobit Model. Econometrica. 1978;46(5):1211-1215.
 Other Censored Descriptive Statistics:
 \code{\link[=geomean_tobit]{geomean_tobit()}},
 \code{\link[=sd_tobit]{sd_tobit()}},
+\code{\link{tobit_condition_classes}},
 \code{\link{tobit_status_codes}}
 }
 \concept{Censored Descriptive Statistics}
